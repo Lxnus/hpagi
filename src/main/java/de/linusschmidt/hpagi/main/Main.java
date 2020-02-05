@@ -18,7 +18,6 @@ import gnu.prolog.term.AtomTerm;
 import gnu.prolog.vm.Environment;
 import gnu.prolog.vm.Interpreter;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
