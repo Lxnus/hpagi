@@ -1,9 +1,11 @@
 package de.linusschmidt.hpagi.main;
 
-import com.bayesserver.Network;
-import com.bayesserver.Node;
-import com.bayesserver.Variable;
+import com.bayesserver.*;
 import com.bayesserver.data.*;
+import com.bayesserver.inference.RelevanceTreeInferenceFactory;
+import com.bayesserver.learning.parameters.ParameterLearning;
+import com.bayesserver.learning.parameters.ParameterLearningOptions;
+import com.bayesserver.learning.parameters.ParameterLearningOutput;
 import com.bayesserver.learning.structure.LinkOutput;
 import com.bayesserver.learning.structure.PCStructuralLearning;
 import com.bayesserver.learning.structure.PCStructuralLearningOptions;
@@ -11,6 +13,7 @@ import com.bayesserver.learning.structure.PCStructuralLearningOutput;
 import de.linusschmidt.hpagi.translation.Translator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,10 +30,11 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         translationTest();
-        bayesianTest();
+        bayesianStructureTest();
+        bayesianParameterTest();
     }
 
-    private static void bayesianTest() {
+    private static void bayesianStructureTest() {
         DataTable dataTable = new DataTable();
         DataColumnCollection dataColumns = dataTable.getColumns();
         dataColumns.add("A", String.class);
@@ -69,6 +73,59 @@ public class Main {
         for(LinkOutput linkOutput : structuralLearningOutput.getLinkOutputs()) {
             System.out.println(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
         }
+    }
+
+    private static void bayesianParameterTest() {
+        DataTable dataTable = new DataTable();
+        DataColumnCollection dataColumns = dataTable.getColumns();
+        dataColumns.add("X", Double.class);
+        dataColumns.add("Y", Double.class);
+        DataRowCollection dataRows = dataTable.getRows();
+        /*
+        for(int i = 0; i < 10; i++) {
+            double x = Math.random() * 100;
+            double y = Math.random() * 100;
+            System.out.println("(x, y) -> " + x + ", " + y);
+            dataRows.add(x, y);
+        }
+        */
+        /*
+         * Hard code dataTable
+         */
+        dataRows.add(0.53243, 1.5325);
+        dataRows.add(0.43454, 1.6453);
+        dataRows.add(9.23423, 4.2342);
+        dataRows.add(8.92344, 4.0234);
+        dataRows.add(4.04352, 5.2342);
+        dataRows.add(3.92343, 5.3333);
+
+        Network network = new Network();
+
+        Node nodeCluster = new Node("Cluster", new String[] {"Cluster1", "Cluster2", "Cluster3"}); // Node holds 3 clusters: Cluster1, Cluster2, Cluster3
+        network.getNodes().add(nodeCluster);
+
+        Variable x = new Variable("X", VariableValueType.CONTINUOUS);
+        Variable y = new Variable("Y", VariableValueType.CONTINUOUS);
+
+        Node nodePosition = new Node("Position", x, y); // Holds the position: Variable[x], Variable[y]
+        network.getNodes().add(nodePosition);
+        network.getLinks().add(new Link(nodeCluster, nodePosition)); //connection between nodeCluster -> nodePosition
+
+        x = network.getVariables().get("X");
+        y = network.getVariables().get("Y");
+
+        ParameterLearning parameterLearning = new ParameterLearning(network, new RelevanceTreeInferenceFactory());
+        ParameterLearningOptions parameterLearningOptions = new ParameterLearningOptions();
+
+        DataReaderCommand dataReaderCommand = new DataTableDataReaderCommand(dataTable);
+        ReaderOptions readerOptions = new ReaderOptions(null);
+        VariableReference[] variableReferences = new VariableReference[] {
+                new VariableReference(x, ColumnValueType.VALUE, x.getName()),
+                new VariableReference(y, ColumnValueType.VALUE, y.getName())
+        };
+        EvidenceReaderCommand evidenceReaderCommand = new DefaultEvidenceReaderCommand(dataReaderCommand, Arrays.asList(variableReferences), readerOptions);
+        ParameterLearningOutput parameterLearningOutput = parameterLearning.learn(evidenceReaderCommand, parameterLearningOptions);
+        System.out.println("Log likelihood: " + parameterLearningOutput.getLogLikelihood());
     }
 
     private static void translationTest() throws InterruptedException {
