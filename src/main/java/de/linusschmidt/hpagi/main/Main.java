@@ -40,6 +40,11 @@ public class Main {
         bayesianParameterTest();
         algorithmTest();
         prologTest();
+        environmentTest();
+    }
+
+    private static void environmentTest() {
+        new de.linusschmidt.hpagi.environment.Environment(null);
     }
 
     private static void prologTest() {
@@ -66,8 +71,8 @@ public class Main {
         d.addNeighbour(e);
         b.addNeighbour(d);
         b.addNeighbour(c);
-        a.addNeighbour(c);
         a.addNeighbour(b);
+        a.addNeighbour(c);
 
         graph.addNode(a);
 

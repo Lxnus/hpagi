@@ -29,6 +29,6 @@ public class Printer {
     }
 
     public void printConsoleError(String message) {
-        System.out.println("[" + this.getTime() + "][" + Main.getFramework_Name() + "]: " + message);
+        System.err.println("[" + this.getTime() + "][" + Main.getFramework_Name() + "]: " + message);
     }
 }
