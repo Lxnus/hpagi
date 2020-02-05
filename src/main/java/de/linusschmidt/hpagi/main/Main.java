@@ -25,188 +25,53 @@ public class Main {
         return "HPAGI";
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        translationTest();
+        bayesianTest();
+    }
 
-        Network network = CreateNetworkNoLinks();  // we manually construct the network here, but it could be loaded from a file
-
-        PCStructuralLearning learning = new PCStructuralLearning();
-
-        DataReaderCommand dataReaderCommand = CreateDataReaderCommand();
-
-        List<VariableReference> variableReferences = new ArrayList<>();
-
-        for (Variable v : network.getVariables()) {
-
-            variableReferences.add(new VariableReference(v, ColumnValueType.NAME, v.getName()));
+    public static void bayesianTest() {
+        DataTable dataTable = new DataTable();
+        DataColumnCollection dataColumns = dataTable.getColumns();
+        dataColumns.add("A", String.class);
+        dataColumns.add("B", String.class);
+        dataColumns.add("C", String.class);
+        DataRowCollection dataRows = dataTable.getRows();
+        for(int i = 0; i < 1000; i++) {
+            String[] states = new String[3];
+            for(int j = 0; j < states.length; j++) {
+                String state = Math.random() < 0.5D ? "True" : "False";
+                states[j] = state;
+            }
+            dataRows.add(states[0], states[1], states[2]);
         }
 
+        Network network = new Network();
+        String[] states = new String[] { "True", "False" };
+        String[] classes = new String[] { "A", "B", "C" };
+        for(String clazz : classes) {
+            Node node = new Node(clazz, states);
+            network.getNodes().add(node);
+        }
+
+        PCStructuralLearning structuralLearning = new PCStructuralLearning();
+        DataReaderCommand dataReaderCommand = new DataTableDataReaderCommand(dataTable);
+        List<VariableReference> variableReferences = new ArrayList<>();
+        for(Variable v : network.getVariables()) {
+            variableReferences.add(new VariableReference(v, ColumnValueType.NAME, v.getName()));
+        }
         EvidenceReaderCommand evidenceReaderCommand = new DefaultEvidenceReaderCommand(
                 dataReaderCommand,
                 variableReferences,
                 new ReaderOptions());
-
-        PCStructuralLearningOptions options = new PCStructuralLearningOptions();
-
-        PCStructuralLearningOutput output = (PCStructuralLearningOutput) learning.learn(evidenceReaderCommand, network.getNodes(), options);
-
-        for (LinkOutput linkOutput : output.getLinkOutputs()) {
-
-            System.out.println(
-                    String.format("Link added from %s -> %s",
-                            linkOutput.getLink().getFrom().getName(),
-                            linkOutput.getLink().getTo().getName()));
+        PCStructuralLearningOptions structuralLearningOptions = new PCStructuralLearningOptions();
+        PCStructuralLearningOutput structuralLearningOutput = (PCStructuralLearningOutput) structuralLearning.learn(evidenceReaderCommand, network.getNodes(), structuralLearningOptions);
+        for(LinkOutput linkOutput : structuralLearningOutput.getLinkOutputs()) {
+            System.out.println(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
         }
-
     }
 
-    /// <summary>
-    /// Manually construct a network to keep the example simple.
-    /// </summary>
-    private static Network CreateNetworkNoLinks() {
-
-        Network network = new Network();
-
-        // Instead of manually constructing a network
-        // you could also load from a file using
-        // network.Load("path-to-file");
-
-        for (String name : new String[]{"A", "B", "C"}) {
-            Node node = new Node(name, new String[]{"False", "True"});
-            network.getNodes().add(node);
-        }
-
-        // We are not adding links here, as we are going to learn them from data.
-
-        return network;
-    }
-
-    /// <summary>
-    /// Create a data reader command.
-    /// </summary>
-    /// <remarks>
-    /// Normally you would read from a database or spreadsheet, but to keep this example simple
-    /// we are hard coding the data.
-    /// </remarks>
-    private static DataTableDataReaderCommand CreateDataReaderCommand() {
-
-        // See the Parameter learning sample code, for an
-        // example of how to read from a database.
-
-        DataTable data = new DataTable();
-
-        DataColumnCollection columns = data.getColumns();
-        columns.add("A", String.class);
-        columns.add("B", String.class);
-        columns.add("C", String.class);
-
-        DataRowCollection rows = data.getRows();
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-
-        return new DataTableDataReaderCommand(data);
-
-    }
-
-    /*
-    public static void main(String[] args) throws InterruptedException {
+    public static void translationTest() throws InterruptedException {
         Translator translator = new Translator();
 
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -226,5 +91,4 @@ public class Main {
         executor.shutdown();
         translator.print();
     }
-    */
 }
