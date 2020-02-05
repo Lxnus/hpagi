@@ -86,7 +86,7 @@ public class Environment extends JPanel {
         this.printer.printConsole("done. Load!");
     }
 
-
+    /*
     private void save() {
         this.printer.printConsole("Saving environment walls...");
         BufferedWriter bufferedWriter;
@@ -101,4 +101,5 @@ public class Environment extends JPanel {
         }
         this.printer.printConsole("done. Save!");
     }
+    */
 }

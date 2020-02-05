@@ -18,7 +18,7 @@ public class Printer {
 
     public Printer() {}
 
-    public String getTime() {
+    private String getTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         return simpleDateFormat.format(calendar.getTime());

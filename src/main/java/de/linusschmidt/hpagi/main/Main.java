@@ -6,10 +6,8 @@ import com.bayesserver.inference.RelevanceTreeInferenceFactory;
 import com.bayesserver.learning.parameters.ParameterLearning;
 import com.bayesserver.learning.parameters.ParameterLearningOptions;
 import com.bayesserver.learning.parameters.ParameterLearningOutput;
-import com.bayesserver.learning.structure.LinkOutput;
-import com.bayesserver.learning.structure.PCStructuralLearning;
-import com.bayesserver.learning.structure.PCStructuralLearningOptions;
-import com.bayesserver.learning.structure.PCStructuralLearningOutput;
+import com.bayesserver.learning.parameters.ParameterLearningProgressInfo;
+import com.bayesserver.learning.structure.*;
 import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
 import de.linusschmidt.hpagi.utilities.Graph;
@@ -138,13 +136,14 @@ public class Main {
         */
         /*
          * Hard code dataTable
-         */
+         *
         dataRows.add(0.53243, 1.5325);
         dataRows.add(0.43454, 1.6453);
         dataRows.add(9.23423, 4.2342);
         dataRows.add(8.92344, 4.0234);
         dataRows.add(4.04352, 5.2342);
         dataRows.add(3.92343, 5.3333);
+        */
 
         Network network = new Network();
 
@@ -173,6 +172,10 @@ public class Main {
         EvidenceReaderCommand evidenceReaderCommand = new DefaultEvidenceReaderCommand(dataReaderCommand, Arrays.asList(variableReferences), readerOptions);
         ParameterLearningOutput parameterLearningOutput = parameterLearning.learn(evidenceReaderCommand, parameterLearningOptions);
         System.out.println("Log likelihood: " + parameterLearningOutput.getLogLikelihood());
+        for(int i = 0; i < parameterLearning.getNetwork().getNodes().get("Cluster").getDistribution().getTable().size(); i++) {
+            System.out.println(parameterLearning.getNetwork().getNodes().get("Cluster").getDistribution().getTable().get(i));
+        }
+
     }
 
     private static void translationTest() throws InterruptedException {
