@@ -30,7 +30,7 @@ public class Main {
         bayesianTest();
     }
 
-    public static void bayesianTest() {
+    private static void bayesianTest() {
         DataTable dataTable = new DataTable();
         DataColumnCollection dataColumns = dataTable.getColumns();
         dataColumns.add("A", String.class);
@@ -71,7 +71,7 @@ public class Main {
         }
     }
 
-    public static void translationTest() throws InterruptedException {
+    private static void translationTest() throws InterruptedException {
         Translator translator = new Translator();
 
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
