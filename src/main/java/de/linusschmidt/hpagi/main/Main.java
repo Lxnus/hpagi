@@ -8,6 +8,7 @@ import com.bayesserver.learning.parameters.ParameterLearningOptions;
 import com.bayesserver.learning.parameters.ParameterLearningOutput;
 import com.bayesserver.learning.parameters.ParameterLearningProgressInfo;
 import com.bayesserver.learning.structure.*;
+import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
 import de.linusschmidt.hpagi.utilities.Graph;
@@ -38,7 +39,42 @@ public class Main {
         bayesianParameterTest();
         algorithmTest();
         prologTest();
-        environmentTest();
+        //environmentTest();
+        bayesianNetworkBuilderTest();
+    }
+
+    private static void bayesianNetworkBuilderTest() {
+        BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder();
+        String[] nodeDescription = new String[] {"True", "False"};
+        String[] dataDescription = new String[] {"X", "Y"};
+        List<double[]> data = new ArrayList<>();
+        double[] h1 = new double[] { 0, 1 };
+        double[] h2 = new double[] { 1, 1 };
+        double[] h3 = new double[] { 1, 0 };
+        double[] h4 = new double[] { 0, 0 };
+        double[] h5 = new double[] { 0, 1 };
+        data.add(h1);
+        data.add(h2);
+        data.add(h3);
+        data.add(h4);
+        data.add(h5);
+        bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
+        Network network = bayesianNetworkBuilder.generateBayesianNetwork();
+
+        for(Node node : network.getNodes()) {
+            System.out.println("Node[" + node.getName() + "]:");
+            if(node.getLinks().size() != 0) {
+                for (Link link : node.getLinks()) {
+                    System.out.println("> Link: " + link.getFrom().getName() + " -> " + link.getTo().getName());
+                }
+            } else {
+                System.out.println(" > No links.");
+            }
+            System.out.println(" > Distributions: ");
+            for(int i = 0; i < node.getDistribution().getTable().size(); i++) {
+                System.out.println("  => [" + i + "]: " + node.getDistribution().getTable().get(i));
+            }
+        }
     }
 
     private static void environmentTest() {
@@ -136,14 +172,13 @@ public class Main {
         */
         /*
          * Hard code dataTable
-         *
+         */
         dataRows.add(0.53243, 1.5325);
         dataRows.add(0.43454, 1.6453);
         dataRows.add(9.23423, 4.2342);
         dataRows.add(8.92344, 4.0234);
         dataRows.add(4.04352, 5.2342);
         dataRows.add(3.92343, 5.3333);
-        */
 
         Network network = new Network();
 
