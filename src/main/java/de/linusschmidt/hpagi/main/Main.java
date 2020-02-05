@@ -11,7 +11,14 @@ import com.bayesserver.learning.structure.PCStructuralLearning;
 import com.bayesserver.learning.structure.PCStructuralLearningOptions;
 import com.bayesserver.learning.structure.PCStructuralLearningOutput;
 import de.linusschmidt.hpagi.translation.Translator;
+import de.linusschmidt.hpagi.utilities.Algorithms;
+import de.linusschmidt.hpagi.utilities.Graph;
+import gnu.prolog.database.PrologTextLoaderError;
+import gnu.prolog.term.AtomTerm;
+import gnu.prolog.vm.Environment;
+import gnu.prolog.vm.Interpreter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +39,42 @@ public class Main {
         translationTest();
         bayesianStructureTest();
         bayesianParameterTest();
+        algorithmTest();
+        prologTest();
+    }
+
+    private static void prologTest() {
+        Environment environment = new Environment();
+        environment.ensureLoaded(AtomTerm.get("main.pro"));
+
+        Interpreter interpreter = environment.createInterpreter();
+
+        environment.runInitialization(interpreter);
+
+        for(PrologTextLoaderError error : environment.getLoadingErrors()) {
+            error.printStackTrace();
+        }
+    }
+
+    private static void algorithmTest() {
+        Graph graph = new Graph();
+        Graph.Node a = new Graph.Node(0);
+        Graph.Node b = new Graph.Node(1);
+        Graph.Node c = new Graph.Node(2);
+        Graph.Node d = new Graph.Node(3);
+        Graph.Node e = new Graph.Node(4);
+
+        d.addNeighbour(e);
+        b.addNeighbour(d);
+        b.addNeighbour(c);
+        a.addNeighbour(c);
+        a.addNeighbour(b);
+
+        graph.addNode(a);
+
+        Algorithms algorithms = new Algorithms();
+        Graph.Node result = algorithms.bfs(graph, 3);
+        System.out.println("Result: " + result.getState());
     }
 
     private static void bayesianStructureTest() {

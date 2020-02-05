@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Graph {
 
-    public class Node {
+    public static class Node {
 
         private double state;
 
@@ -24,16 +24,20 @@ public class Graph {
         public double getState() {
             return state;
         }
+
+        public List<Node> getNeighbours() {
+            return neighbours;
+        }
     }
 
     private List<Node> nodes;
 
     public Graph() {
-
+        this.nodes = new ArrayList<>();
     }
 
     public void addNode(Node node) {
-
+        this.nodes.add(node);
     }
 
     public List<Node> getNodes() {
