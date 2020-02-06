@@ -7,7 +7,6 @@ import com.bayesserver.inference.RelevanceTreeInferenceFactory;
 import com.bayesserver.learning.parameters.ParameterLearning;
 import com.bayesserver.learning.parameters.ParameterLearningOptions;
 import com.bayesserver.learning.parameters.ParameterLearningOutput;
-import com.bayesserver.learning.parameters.ParameterLearningProgressInfo;
 import com.bayesserver.learning.structure.*;
 import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
@@ -41,93 +40,22 @@ public class Main {
         bayesianParameterTest();
         algorithmTest();
         prologTest();
-        //environmentTest();
+        environmentTest();
         bayesianNetworkBuilderTest();
     }
 
     private static void bayesianNetworkBuilderTest() throws InconsistentEvidenceException {
         BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder();
         String[] nodeDescription = new String[] {"True", "False"};
-        String[] dataDescription = new String[] {"A", "B", "C"};
+        String[] dataDescription = new String[] {"A", "B", "C", "D"};
         List<double[]> data = new ArrayList<>();
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 0, 1, 0 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 0, 1 });
-        data.add(new double[] { 0, 1, 1 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 1, 1, 0 });
-        data.add(new double[] { 0, 1, 1 });
-        data.add(new double[] { 0, 1, 1 });
-        data.add(new double[] { 0, 1, 1 });
-        data.add(new double[] { 0, 1, 1 });
-        data.add(new double[] { 0, 1, 1 });
-        data.add(new double[] { 0, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
-        data.add(new double[] { 1, 1, 1 });
+        for(int i = 0; i < 10000; i++) {
+            double[] vector = new double[dataDescription.length];
+            for(int j = 0; j < vector.length; j++) {
+                vector[j] = Math.random() < 0.5D ? 1 : 0;
+            }
+            data.add(vector);
+        }
         bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
         Network network = bayesianNetworkBuilder.generateBayesianNetwork();
 
@@ -146,7 +74,7 @@ public class Main {
             }
         }
 
-        bayesianNetworkBuilder.predict(new double[] { 0, 1, 1 });
+        bayesianNetworkBuilder.predict(new double[] { 0, 1, 1, 0 }, 0);
     }
 
     private static void environmentTest() {

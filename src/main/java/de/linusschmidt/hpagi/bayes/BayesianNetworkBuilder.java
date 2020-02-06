@@ -1,12 +1,7 @@
 package de.linusschmidt.hpagi.bayes;
 
-import com.bayesserver.Network;
-import com.bayesserver.Node;
-import com.bayesserver.ValidationOptions;
-import com.bayesserver.Variable;
+import com.bayesserver.*;
 import com.bayesserver.data.*;
-import com.bayesserver.data.sampling.DataSampler;
-import com.bayesserver.data.sampling.DataSamplingOptions;
 import com.bayesserver.inference.*;
 import com.bayesserver.learning.parameters.OnlineLearning;
 import com.bayesserver.learning.parameters.OnlineLearningOptions;
@@ -19,7 +14,6 @@ import com.bayesserver.learning.structure.PCStructuralLearningOutput;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class BayesianNetworkBuilder {
 
@@ -50,27 +44,31 @@ public class BayesianNetworkBuilder {
         return this.network;
     }
 
-    public void predict(double[] binaryInput) throws InconsistentEvidenceException {
-        Evidence evidence = new DefaultEvidence(this.network);
-        //for(int i = 0; i < binaryInput.length; i++) {
-            evidence.setState(this.network.getVariables()
-                    .get(this.dataDescriptions[0])
-                    .getStates()
-                    .get(this.processedNodeData(binaryInput)[0], Boolean.parseBoolean(this.processedNodeData(binaryInput)[0])));
-        //}
+    public void predict(double[] binaryInputs, int idx) throws InconsistentEvidenceException {
+        InferenceFactory inferenceFactory = new RelevanceTreeInferenceFactory();
+        Inference inference = inferenceFactory.createInferenceEngine(this.network);
+        QueryOutput queryOutput = inferenceFactory.createQueryOutput();
+        QueryOptions queryOptions = inferenceFactory.createQueryOptions();
 
-        Evidence sample = new DefaultEvidence(this.network);
+        for(int i = 0; i < binaryInputs.length; i++) {
+            if(binaryInputs[i] == 1) {
+                Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[i]);
+                State state = variable.getStates().get(this.processedNodeData(binaryInputs)[i]);
+                inference.getEvidence().setState(state);
+            }
+            Node node = inference.getNetwork().getNodes().get(this.dataDescriptions[i]);
+            Table table = new Table(node.getDistribution().getTable());
+            inference.getQueryDistributions().add(table);
+        }
+        inference.query(queryOptions, queryOutput);
 
-        DataSampler dataSampler = new DataSampler(this.network, evidence);
-        DataSamplingOptions dataSamplingOptions = new DataSamplingOptions();
-
-        for(int i = 0; i < 100; i++) {
-            dataSampler.takeSample(sample, new Random(0), dataSamplingOptions);
-
-            System.out.println("A: " + this.network.getVariables().get("A").getStates().get(sample.getState(this.network.getVariables().get("A"))).getName());
-            System.out.println("B: " + this.network.getVariables().get("B").getStates().get(sample.getState(this.network.getVariables().get("B"))).getName());
-            System.out.println("C: " + this.network.getVariables().get("B").getStates().get(sample.getState(this.network.getVariables().get("C"))).getName());
-            System.out.println();
+        Node node = inference.getNetwork().getNodes().get(this.dataDescriptions[idx]);
+        Table table = new Table(node.getDistribution().getTable());
+        for(double input : binaryInputs) {
+            if (input == 1) {
+                Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[idx]);
+                System.out.println("Prediction: " + table.get(variable.getStates().get("False")));
+            }
         }
     }
 
@@ -126,113 +124,11 @@ public class BayesianNetworkBuilder {
         for(String dataDescription : this.dataDescriptions) {
             dataColumns.add(dataDescription, String.class);
         }
-        DataRowCollection rows = dataTable.getRows();
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "False", "False");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("False", "False", "False");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "False", "False");
-        rows.add("False", "True", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "False", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("False", "True", "True");
-        rows.add("True", "True", "True");
-        rows.add("True", "False", "True");
-        /*
+        DataRowCollection dataRows = dataTable.getRows();
         for(double[] datum : data) {
             String[] procData = this.processedNodeData(datum);
-            dataRows.add(procData[0], procData[1], procData[2]);
+            dataRows.add(procData[0], procData[1], procData[2], procData[3]);
         }
-        */
         return dataTable;
     }
 
