@@ -2,6 +2,7 @@ package de.linusschmidt.hpagi.environment;
 
 import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.utilities.FileUtil;
+import de.linusschmidt.hpagi.utilities.MathUtilities;
 import de.linusschmidt.hpagi.utilities.Printer;
 
 import javax.swing.*;
@@ -24,6 +25,8 @@ public class Environment extends JPanel {
 
     public Environment(Agent agent) {
         this.agent = agent;
+
+        this.agent.setEnvironment(this);
 
         this.printer = new Printer();
         this.fileUtil = new FileUtil();
@@ -107,6 +110,10 @@ public class Environment extends JPanel {
             e.printStackTrace();
         }
         this.printer.printConsole("done. Load!");
+    }
+
+    public double getReward() {
+        return 1.0D / MathUtilities.distance(this.npc.getX(), this.targetNPC.getX(), this.npc.getY(), this.targetNPC.getY());
     }
 
     /*

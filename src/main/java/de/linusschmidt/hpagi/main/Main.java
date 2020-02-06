@@ -40,8 +40,8 @@ public class Main {
         bayesianParameterTest();
         algorithmTest();
         prologTest();
-        environmentTest();
         bayesianNetworkBuilderTest();
+        environmentTest();
     }
 
     private static void bayesianNetworkBuilderTest() throws InconsistentEvidenceException {
