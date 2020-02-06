@@ -1,6 +1,6 @@
 package de.linusschmidt.hpagi.environment;
 
-import de.linusschmidt.hpagi.translation.Translator;
+import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.utilities.FileUtil;
 import de.linusschmidt.hpagi.utilities.Printer;
 
@@ -12,17 +12,16 @@ import java.util.List;
 
 public class Environment extends JPanel {
 
+    private Entity npc;
+    private Agent agent;
     private Printer printer;
     private FileUtil fileUtil;
     private Dimension dimension;
-    private Translator translator;
-
-    private Entity npc;
 
     private List<Wall> walls;
 
-    public Environment(Translator translator) {
-        this.translator = translator;
+    public Environment(Agent agent) {
+        this.agent = agent;
 
         this.printer = new Printer();
         this.fileUtil = new FileUtil();
@@ -55,6 +54,13 @@ public class Environment extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        double[] state = agent.getBinaryState();
+        int x = state[0] == 1 ? 1 : state[1] == 1 ? -1 : 0;
+        int y = state[2] == 1 ? 1 : state[3] == 1 ? -1 : 0;
+        if(this.npc.getX() > 0 && this.npc.getX() < this.dimension.getWidth() && this.npc.getY() > 0 && this.npc.getY() < this.dimension.getHeight()) {
+            this.npc.update(x * 10, y * 10);
+        }
+
         g.setColor(Color.BLACK);
         for(Wall wall : this.walls) {
             if(wall.isVisible()) {
@@ -63,6 +69,11 @@ public class Environment extends JPanel {
         }
         g.setColor(Color.GREEN);
         g.fillRect(this.npc.getX(), this.npc.getY(), 10, 10);
+
+        try {
+            Thread.sleep(10);
+        } catch (Exception ignored) {}
+        this.repaint();
     }
 
     @Override

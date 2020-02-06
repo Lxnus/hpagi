@@ -14,7 +14,6 @@ import com.bayesserver.learning.parameters.ParameterLearning;
 import com.bayesserver.learning.parameters.ParameterLearningOptions;
 import com.bayesserver.learning.structure.PCStructuralLearning;
 import com.bayesserver.learning.structure.PCStructuralLearningOptions;
-import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +23,11 @@ public class BayesianNetworkBuilder {
     private String[] nodeDescription;
     private String[] dataDescriptions;
 
-    private Printer printer;
     private Network network;
 
     private List<double[]> data;
 
     public BayesianNetworkBuilder() {
-        this.printer = new Printer();
         this.network = new Network();
     }
 
@@ -52,7 +49,7 @@ public class BayesianNetworkBuilder {
     private void build() throws InconsistentEvidenceException {
         DataTable dataTable = this.generateDataTable(this.data);
         DataTableDataReaderCommand dataReaderCommand = new DataTableDataReaderCommand(dataTable);
-        this.generateNetworkNodes(this.data.size() / 2);
+        this.generateNetworkNodes();
 
         List<VariableReference> variableReferences = new ArrayList<>();
         for(Variable variable : this.network.getVariables()) {
@@ -64,10 +61,7 @@ public class BayesianNetworkBuilder {
         this.createDistributions(evidenceReaderCommand);
     }
 
-    private void generateNetworkNodes(int amount) {
-        if(amount > this.data.size()) {
-            this.printer.printConsoleError("Node amount cannot be larger than data size!");
-        }
+    private void generateNetworkNodes() {
         for(String clazz : this.dataDescriptions) {
             Node node = new Node(clazz, this.nodeDescription);
             this.network.getNodes().add(node);

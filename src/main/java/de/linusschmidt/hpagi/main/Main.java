@@ -8,6 +8,7 @@ import com.bayesserver.learning.parameters.ParameterLearningOptions;
 import com.bayesserver.learning.parameters.ParameterLearningOutput;
 import com.bayesserver.learning.parameters.ParameterLearningProgressInfo;
 import com.bayesserver.learning.structure.*;
+import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
@@ -39,7 +40,7 @@ public class Main {
         bayesianParameterTest();
         algorithmTest();
         prologTest();
-        //environmentTest();
+        environmentTest();
         bayesianNetworkBuilderTest();
     }
 
@@ -78,7 +79,8 @@ public class Main {
     }
 
     private static void environmentTest() {
-        new de.linusschmidt.hpagi.environment.Environment(null);
+        Agent agent = new Agent(null);
+        de.linusschmidt.hpagi.environment.Environment environment = new de.linusschmidt.hpagi.environment.Environment(agent);
     }
 
     private static void prologTest() {
