@@ -18,6 +18,8 @@ public class Environment extends JPanel {
     private FileUtil fileUtil;
     private Dimension dimension;
 
+    private Entity targetNPC;
+
     private List<Wall> walls;
 
     public Environment(Agent agent) {
@@ -30,6 +32,7 @@ public class Environment extends JPanel {
         this.walls = new ArrayList<>();
 
         this.buildNPC();
+        this.buildTargetNPC();
         this.load();
         this.draw();
     }
@@ -38,6 +41,12 @@ public class Environment extends JPanel {
         int x = (int) Math.round(Math.random() * this.dimension.getWidth());
         int y = (int) Math.round(Math.random() * this.dimension.getHeight());
         this.npc = new Entity(x, y);
+    }
+
+    private void buildTargetNPC() {
+        int x = (int) Math.round(Math.random() * this.dimension.getWidth());
+        int y = (int) Math.round(Math.random() * this.dimension.getHeight());
+        this.targetNPC = new Entity(x, y);
     }
 
     private void draw() {
@@ -69,6 +78,9 @@ public class Environment extends JPanel {
         }
         g.setColor(Color.GREEN);
         g.fillRect(this.npc.getX(), this.npc.getY(), 10, 10);
+
+        g.setColor(Color.RED);
+        g.fillRect(this.targetNPC.getX(), this.targetNPC.getY(), 10, 10);
 
         try {
             Thread.sleep(10);

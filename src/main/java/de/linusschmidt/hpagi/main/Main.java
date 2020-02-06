@@ -2,6 +2,7 @@ package de.linusschmidt.hpagi.main;
 
 import com.bayesserver.*;
 import com.bayesserver.data.*;
+import com.bayesserver.inference.InconsistentEvidenceException;
 import com.bayesserver.inference.RelevanceTreeInferenceFactory;
 import com.bayesserver.learning.parameters.ParameterLearning;
 import com.bayesserver.learning.parameters.ParameterLearningOptions;
@@ -34,31 +35,99 @@ public class Main {
         return "HPAGI";
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         translationTest();
         bayesianStructureTest();
         bayesianParameterTest();
         algorithmTest();
         prologTest();
-        environmentTest();
+        //environmentTest();
         bayesianNetworkBuilderTest();
     }
 
-    private static void bayesianNetworkBuilderTest() {
+    private static void bayesianNetworkBuilderTest() throws InconsistentEvidenceException {
         BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder();
         String[] nodeDescription = new String[] {"True", "False"};
-        String[] dataDescription = new String[] {"X", "Y"};
+        String[] dataDescription = new String[] {"A", "B", "C"};
         List<double[]> data = new ArrayList<>();
-        double[] h1 = new double[] { 0, 1 };
-        double[] h2 = new double[] { 1, 1 };
-        double[] h3 = new double[] { 1, 0 };
-        double[] h4 = new double[] { 0, 0 };
-        double[] h5 = new double[] { 0, 1 };
-        data.add(h1);
-        data.add(h2);
-        data.add(h3);
-        data.add(h4);
-        data.add(h5);
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 0, 1, 0 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 0, 1 });
+        data.add(new double[] { 0, 1, 1 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 1, 1, 0 });
+        data.add(new double[] { 0, 1, 1 });
+        data.add(new double[] { 0, 1, 1 });
+        data.add(new double[] { 0, 1, 1 });
+        data.add(new double[] { 0, 1, 1 });
+        data.add(new double[] { 0, 1, 1 });
+        data.add(new double[] { 0, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
+        data.add(new double[] { 1, 1, 1 });
         bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
         Network network = bayesianNetworkBuilder.generateBayesianNetwork();
 
@@ -76,11 +145,13 @@ public class Main {
                 System.out.println("  => [" + i + "]: " + node.getDistribution().getTable().get(i));
             }
         }
+
+        bayesianNetworkBuilder.predict(new double[] { 0, 1, 1 });
     }
 
     private static void environmentTest() {
         Agent agent = new Agent(null);
-        de.linusschmidt.hpagi.environment.Environment environment = new de.linusschmidt.hpagi.environment.Environment(agent);
+        new de.linusschmidt.hpagi.environment.Environment(agent);
     }
 
     private static void prologTest() {

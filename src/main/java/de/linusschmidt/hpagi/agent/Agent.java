@@ -15,7 +15,7 @@ public class Agent {
         for(int i = 0; i < binaryH.length; i++) {
             binaryH[i] = Math.random() < 0.5D ? 1 : 0;
         }
-        return binaryH;
+        return new double[] {0, 0, 0, 0};
     }
 
     private void executeBinary(double[] binaryVec) {
