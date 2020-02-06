@@ -28,7 +28,6 @@ public class Agent {
         for(int i = 0; i < binaryH.length; i++) {
             binaryH[i] = Math.random() < 0.5D ? 1 : 0;
         }
-        System.out.println(this.environment.getReward());
         return binaryH; //new double[] {0, 0, 0, 0};
     }
 

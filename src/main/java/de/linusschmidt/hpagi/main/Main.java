@@ -10,6 +10,7 @@ import com.bayesserver.learning.parameters.ParameterLearningOutput;
 import com.bayesserver.learning.structure.*;
 import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
+import de.linusschmidt.hpagi.network.Hopfield;
 import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
 import de.linusschmidt.hpagi.utilities.Graph;
@@ -41,7 +42,35 @@ public class Main {
         algorithmTest();
         prologTest();
         bayesianNetworkBuilderTest();
+        dynamicMemoryTest();
         environmentTest();
+    }
+
+    private static void dynamicMemoryTest() {
+        String number = "0011100011011000000110000001100011111111";
+        double[] vector = new double[number.split("").length];
+        for(int i = 0; i < vector.length; i++) {
+            vector[i] = Double.parseDouble(number.split("")[i]);
+        }
+        Hopfield dynamicMemory = new Hopfield(vector.length);
+        dynamicMemory.addData(vector);
+        dynamicMemory.addData(vector);
+
+        dynamicMemory.train();
+
+        String testNumber = "0011110011011011000110000001100011111111";
+        double[] testVector = new double[testNumber.split("").length];
+        for(int i = 0; i < testVector.length; i++) {
+            testVector[i] = Double.parseDouble(number.split("")[i]);
+        }
+
+        double[] recall = dynamicMemory.recreate(testVector, 10);
+        StringBuilder out = new StringBuilder();
+        for(double value : recall) {
+            String recallNumber = value != 1 ? "0" : "1";
+            out.append(recallNumber);
+        }
+        System.out.println(out);
     }
 
     private static void bayesianNetworkBuilderTest() throws InconsistentEvidenceException {

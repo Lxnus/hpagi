@@ -48,8 +48,9 @@ public class Hopfield {
                 for(double[] data : this.data) {
                     double value = this.hopfieldValue(data[i]);
                     double target = this.hopfieldValue(data[j]);
-                    int temp = (int) (target * value);
-                    this.weights[j][i] = this.weights[i][j] = temp;
+                    double temp = target * value;
+                    int intValue = (int) (temp + weights[i][j]);
+                    this.weights[j][i] = this.weights[i][j] = intValue;
                 }
             }
         }
@@ -72,6 +73,6 @@ public class Hopfield {
     }
 
     private double hopfieldValue(double x) {
-        return x == 0 ? -1.0D : 1.0D;
+        return x < 0.0D ? -1.0D : 1.0D;
     }
 }
