@@ -47,7 +47,11 @@ public class Main {
     }
 
     private static void dynamicMemoryTest() {
-        String number = "0011100011011000000110000001100011111111";
+        String number = "00111000" +
+                        "11011000" +
+                        "00011000" +
+                        "00011000" +
+                        "11111111";
         double[] vector = new double[number.split("").length];
         for(int i = 0; i < vector.length; i++) {
             vector[i] = Double.parseDouble(number.split("")[i]);
@@ -58,7 +62,11 @@ public class Main {
 
         dynamicMemory.train();
 
-        String testNumber = "0011110011011011000110000001100011111111";
+        String testNumber = "00111100" +
+                            "11011011" +
+                            "00011000" +
+                            "00011000" +
+                            "11111111";
         double[] testVector = new double[testNumber.split("").length];
         for(int i = 0; i < testVector.length; i++) {
             testVector[i] = Double.parseDouble(number.split("")[i]);
