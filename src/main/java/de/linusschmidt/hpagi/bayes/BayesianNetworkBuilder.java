@@ -11,11 +11,12 @@ import com.bayesserver.learning.structure.LinkOutput;
 import com.bayesserver.learning.structure.PCStructuralLearning;
 import com.bayesserver.learning.structure.PCStructuralLearningOptions;
 import com.bayesserver.learning.structure.PCStructuralLearningOutput;
+import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BayesianNetworkBuilder {
+public class BayesianNetworkBuilder {
 
     private String[] nodeDescription;
     private String[] dataDescriptions;
@@ -41,6 +42,7 @@ public abstract class BayesianNetworkBuilder {
             e.printStackTrace();
         }
         this.network.validate(new ValidationOptions());
+        this.printNetwork();
     }
 
     public void predict(double[] binaryInputs, int idx) throws InconsistentEvidenceException {
@@ -49,8 +51,10 @@ public abstract class BayesianNetworkBuilder {
         QueryOutput queryOutput = inferenceFactory.createQueryOutput();
         QueryOptions queryOptions = inferenceFactory.createQueryOptions();
 
+        queryOptions.setDecisionAlgorithm(DecisionAlgorithm.SINGLE_POLICY_UPDATING);
+
         for(int i = 0; i < binaryInputs.length; i++) {
-            if(binaryInputs[i] == 1) {
+            if(binaryInputs[i] == 1 && i != idx) {
                 Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[i]);
                 State state = variable.getStates().get(this.processedNodeData(binaryInputs)[i]);
                 inference.getEvidence().setState(state);
@@ -63,12 +67,16 @@ public abstract class BayesianNetworkBuilder {
 
         Node node = inference.getNetwork().getNodes().get(this.dataDescriptions[idx]);
         Table table = new Table(node.getDistribution().getTable());
-        for(double input : binaryInputs) {
-            if (input == 1) {
+        double[] output = new double[binaryInputs.length];
+        for(int i = 0; i < binaryInputs.length; i++) {
+            //if(binaryInputs[i] == 1) {
                 Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[idx]);
-                System.out.println("Prediction: " + table.get(variable.getStates().get("False")));
-            }
+                double prediction = table.get(variable.getStates().get(idx == 0 ? "False" : "True"));
+                System.out.println("Prediction: " + prediction);
+                output[i] = prediction;
+            //}
         }
+        Utilities.printVector(output);
     }
 
     private void build() throws InconsistentEvidenceException {
@@ -123,20 +131,12 @@ public abstract class BayesianNetworkBuilder {
         for(String dataDescription : this.dataDescriptions) {
             dataColumns.add(dataDescription, String.class);
         }
-        List<String[]> processedData = this.processData(data);
-        generateDataRowCollection(dataTable, processedData);
-        return dataTable;
-    }
-
-    public abstract void generateDataRowCollection(DataTable dataTable, List<String[]> data);
-
-    private List<String[]> processData(List<double[]> data) {
-        List<String[]> processedData = new ArrayList<>();
-        for(double[] vec : data) {
-            String[] procData = this.processedNodeData(vec);
-            processedData.add(procData);
+        DataRowCollection dataRows = dataTable.getRows();
+        for(double[] vector : data) {
+            String[] processedNodeData = this.processedNodeData(vector);
+            dataRows.add(processedNodeData);
         }
-        return processedData;
+        return dataTable;
     }
 
     private String[] processedNodeData(double[] preData) {
@@ -145,6 +145,23 @@ public abstract class BayesianNetworkBuilder {
             processed[i] = preData[i] == 1 ? "True" : "False";
         }
         return processed;
+    }
+
+    public void printNetwork() {
+        for(Node node : this.network.getNodes()) {
+            System.out.println("Node[" + node.getName() + "]:");
+            if(node.getLinks().size() != 0) {
+                for (Link link : node.getLinks()) {
+                    System.out.println("> Link: " + link.getFrom().getName() + " -> " + link.getTo().getName());
+                }
+            } else {
+                System.out.println(" > No links.");
+            }
+            System.out.println(" > Distributions: ");
+            for(int i = 0; i < node.getDistribution().getTable().size(); i++) {
+                System.out.println("  => [" + i + "]: " + node.getDistribution().getTable().get(i));
+            }
+        }
     }
 
     public Network getNetwork() {

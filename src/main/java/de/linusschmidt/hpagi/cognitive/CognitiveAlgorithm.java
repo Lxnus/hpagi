@@ -1,7 +1,6 @@
 package de.linusschmidt.hpagi.cognitive;
 
-import com.bayesserver.data.DataRowCollection;
-import com.bayesserver.data.DataTable;
+import com.bayesserver.inference.InconsistentEvidenceException;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.network.Hopfield;
 import de.linusschmidt.hpagi.utilities.MultithreadingUtilities;
@@ -17,6 +16,7 @@ import java.util.concurrent.Executors;
 public class CognitiveAlgorithm {
 
     private Printer printer;
+    private BayesianNetworkBuilder bayesianNetworkBuilder;
 
     private LinkedList<Hopfield> dynamicMemories;
 
@@ -33,26 +33,17 @@ public class CognitiveAlgorithm {
         final List<Callable<Void>> workers = this.createWorkers(partitions);
         executorService.invokeAll(workers);
         executorService.shutdown();
-
-        this.generateBayesianNetwork(data);
     }
 
-    public void cognitivePrediction(double[] X) {
-
+    public void cognitivePrediction(double[] X) throws InconsistentEvidenceException {
+        this.bayesianNetworkBuilder.predict(X, 0);
+        this.bayesianNetworkBuilder.predict(X, 1);
     }
 
-    private void generateBayesianNetwork(List<double[]> data) {
-        BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder() {
-            @Override
-            public void generateDataRowCollection(DataTable dataTable, List<String[]> data) {
-                DataRowCollection dataRowCollection = dataTable.getRows();
-                for (String[] vec : data) {
-                    dataRowCollection.add(vec[0], vec[1], vec[2], vec[3], vec[4], vec[5], vec[6], vec[7], vec[8], vec[9]);
-                }
-            }
-        };
-        bayesianNetworkBuilder.setData(new String[] {"True", "False"}, new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}, data);
-        bayesianNetworkBuilder.generateBayesianNetwork();
+    public void generateBayesianNetwork(String[] nodeDescription, String[] dataDescription, List<double[]> data) {
+        this.bayesianNetworkBuilder = new BayesianNetworkBuilder();
+        this.bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
+        this.bayesianNetworkBuilder.generateBayesianNetwork();
     }
 
     private synchronized List<Callable<Void>> createWorkers(final List<List<double[]>> partitions) {

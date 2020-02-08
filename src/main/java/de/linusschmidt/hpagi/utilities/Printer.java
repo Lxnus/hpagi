@@ -28,6 +28,10 @@ public class Printer {
         System.out.println("[" + this.getTime() + "][" + Main.getFramework_Name() + "]: " + message);
     }
 
+    public void printConsoleSL(String message) {
+        System.out.print("[" + this.getTime() + "][" + Main.getFramework_Name() + "]: " + message);
+    }
+
     public void printConsoleError(String message) {
         System.err.println("[" + this.getTime() + "][" + Main.getFramework_Name() + "]: " + message);
     }

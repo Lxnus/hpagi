@@ -48,20 +48,33 @@ public class Main {
         //environmentTest();
     }
 
-    private static void cognitiveMultithreadingTest() throws InterruptedException {
+    private static void cognitiveMultithreadingTest() throws InterruptedException, InconsistentEvidenceException {
         List<double[]> data = new ArrayList<>();
-        for(int i = 0; i < 100; i++) {
+        /*
+        for(int i = 0; i < 5; i++) {
             double[] vector = new double[10];
             for(int j = 0; j < vector.length; j++) {
                 vector[j] = Math.random() < 0.5D ? 1 : 0;
             }
             data.add(vector);
         }
+        */
+
+        data.add(new double[] { 0, 1, 1, 0 });
+        data.add(new double[] { 1, 0, 0, 1 });
+        data.add(new double[] { 1, 1, 0, 0 });
+        data.add(new double[] { 0, 0, 1, 1 });
+        data.add(new double[] { 1, 0, 0, 1 });
+
+        double[] X = new double[] {
+                1, 0, 1, 1
+        };
 
         CognitiveAlgorithm cognitiveAlgorithm = new CognitiveAlgorithm();
         cognitiveAlgorithm.setData(data);
+        cognitiveAlgorithm.generateBayesianNetwork(new String[] {"True", "False"}, new String[] {"A", "B", "C", "D"}, data);
         cognitiveAlgorithm.print();
-        cognitiveAlgorithm.cognitivePrediction(new double[] { 0, 1, 1, 1, 0, 0, 0, 1, 1, 0 });
+        cognitiveAlgorithm.cognitivePrediction(X);
     }
 
     private static void dynamicMemoryTest() {
@@ -100,15 +113,7 @@ public class Main {
     }
 
     private static void bayesianNetworkBuilderTest() throws InconsistentEvidenceException {
-        BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder() {
-            @Override
-            public void generateDataRowCollection(DataTable dataTable, List<String[]> data) {
-                DataRowCollection dataRows = dataTable.getRows();
-                for(String[] vec : data) {
-                    dataRows.add(vec[0], vec[1], vec[2], vec[3]);
-                }
-            }
-        };
+        BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder();
         String[] nodeDescription = new String[] {"True", "False"};
         String[] dataDescription = new String[] {"A", "B", "C", "D"};
         List<double[]> data = new ArrayList<>();
@@ -121,23 +126,6 @@ public class Main {
         }
         bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
         bayesianNetworkBuilder.generateBayesianNetwork();
-
-        Network network = bayesianNetworkBuilder.getNetwork();
-
-        for(Node node : network.getNodes()) {
-            System.out.println("Node[" + node.getName() + "]:");
-            if(node.getLinks().size() != 0) {
-                for (Link link : node.getLinks()) {
-                    System.out.println("> Link: " + link.getFrom().getName() + " -> " + link.getTo().getName());
-                }
-            } else {
-                System.out.println(" > No links.");
-            }
-            System.out.println(" > Distributions: ");
-            for(int i = 0; i < node.getDistribution().getTable().size(); i++) {
-                System.out.println("  => [" + i + "]: " + node.getDistribution().getTable().get(i));
-            }
-        }
 
         bayesianNetworkBuilder.predict(new double[] { 0, 1, 1, 0 }, 0);
     }
