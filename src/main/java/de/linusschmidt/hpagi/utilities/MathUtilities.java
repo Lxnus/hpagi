@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 public class MathUtilities {
 
+    private static Printer printer = new Printer();
+
     public static double sigmoid(double inputValue) {
         return 1.0 / (1.0 + Math.exp(-inputValue));
     }
@@ -105,12 +107,12 @@ public class MathUtilities {
             }
             sum /= Y.length;
             sum = normalize(sum, min, max) * Y.length;
-            System.out.println("Move: " + x);
+            MathUtilities.printer.printConsole(String.format("Move: %s", x));
             x += Y[(int) sum];
             steps++;
         } while (!(Math.abs(x) >= Math.abs(y)));
-        System.out.println("Steps: " + steps);
-        System.out.println(x + " -> " + y);
+        MathUtilities.printer.printConsole(String.format("Steps: %s", steps));
+        MathUtilities.printer.printConsole(String.format("%s -> %s", x, y));
     }
 
     /**
@@ -147,12 +149,12 @@ public class MathUtilities {
             double y = Y[1];
             pX += x;
             pY += y;
-            System.out.println("x-Move: " + x);
-            System.out.println("y-Move: " + y);
+            MathUtilities.printer.printConsole(String.format("x-Move: %s", x));
+            MathUtilities.printer.printConsole(String.format("y-Move: %s", y));
             steps++;
         } while (!(Math.abs(pX) >= Math.abs(tX)) || !(Math.abs(pY) >= Math.abs(tY)));
-        System.out.println("Steps: " + steps);
-        System.out.println("x, y: " + pX + ", " + pY + " -> " + tX + ", " + tY);
+        MathUtilities.printer.printConsole(String.format("Steps: %s", steps));
+        MathUtilities.printer.printConsole(String.format("x, y: %s, %s -> %s, %s", pX, pY, tX, tY));
     }
 
     /**
@@ -189,7 +191,7 @@ public class MathUtilities {
             double[] O = MathUtilities.cbrN(mat, X, Y);
             for(int i = 0; i < O.length; i++) {
                 X[i] += O[i];
-                System.out.println("n-Move[n=" + i + "]: " + O[i]);
+                MathUtilities.printer.printConsole(String.format("n-Move[n=%s]: %s", i, O[i]));
             }
             steps++;
             boolean equal = true;
@@ -203,7 +205,7 @@ public class MathUtilities {
                 break;
             }
         }
-        System.out.println("Steps: " + steps);
+        MathUtilities.printer.printConsole(String.format("Steps: %s", steps));
     }
 
     /**
@@ -218,29 +220,5 @@ public class MathUtilities {
         }
         double b = sum / (H.length - 1);
         return x + b;
-    }
-
-    /***********************************************************************************/
-
-    public void printVec(double[] X) {
-        for(int i = 0; i < X.length; i++) {
-            if(i < X.length - 1) {
-                System.out.print(X[i] + ", ");
-            } else {
-                System.out.print(X[i]);
-            }
-        }
-        System.out.println();
-    }
-
-    public void printVec(int[] X) {
-        for(int i = 0; i < X.length; i++) {
-            if(i < X.length - 1) {
-                System.out.print(X[i] + ", ");
-            } else {
-                System.out.print(X[i]);
-            }
-        }
-        System.out.println();
     }
 }

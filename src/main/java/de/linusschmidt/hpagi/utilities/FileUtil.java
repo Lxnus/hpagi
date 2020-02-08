@@ -25,9 +25,9 @@ public class FileUtil {
         try {
             if (folder.mkdirs()) {
                 folder.createNewFile();
-                this.printer.printConsole("Main-Folder[" + folder.getName() + "] created!");
+                this.printer.printConsole(String.format("Main-Folder[%s] created!", folder.getName()));
             } else {
-                this.printer.printConsoleError("Main-Folder[" + folder.getName() + "] cannot created or already exist!");
+                this.printer.printConsoleError(String.format("Main-Folder[%s] cannot created or already exist!", folder.getName()));
             }
         } catch (Exception ignored) {}
         return folder;
@@ -40,9 +40,9 @@ public class FileUtil {
         try {
             if (!file.exists()) {
                 file.createNewFile();
-                this.printer.printConsole("File[" + file.getName() + "] created!");
+                this.printer.printConsole(String.format("File[%s] created!", file.getName()));
             } else {
-                this.printer.printConsoleError("File[" + file.getName() + "] cannot created or already exist!");
+                this.printer.printConsoleError(String.format("File[%s] cannot created or already exist!", file.getName()));
             }
         } catch (Exception ignored) {}
         return  file;
@@ -54,9 +54,9 @@ public class FileUtil {
         try {
             if (folder.mkdirs()) {
                 folder.createNewFile();
-                this.printer.printConsole("Folder[" + folder.getName() + "] created!");
+                this.printer.printConsole(String.format("Folder[%s] created!", folder.getName()));
             } else {
-                this.printer.printConsoleError("Folder[" + folder.getName() + "] cannot created or already exist!");
+                this.printer.printConsoleError(String.format("Folder[%s] cannot created or already exist!", folder.getName()));
             }
         } catch (Exception ignored) {}
         return  folder;
@@ -68,9 +68,9 @@ public class FileUtil {
         try {
             if(!file.exists()) {
                 file.createNewFile();
-                this.printer.printConsole("File[" + file.getName() + "] created!");
+                this.printer.printConsole(String.format("File[%s] created!", file.getName()));
             } else {
-                this.printer.printConsoleError("File[" + file.getName() + "] cannot created or already exist!");
+                this.printer.printConsoleError(String.format("File[%s] cannot created or already exist!", file.getName()));
             }
         } catch (Exception ignored) {}
         return file;

@@ -75,6 +75,6 @@ public class CognitiveAlgorithm {
     }
 
     public void print() {
-        this.printer.printConsole("Dyn.-Memories: " + this.dynamicMemories.size());
+        this.printer.printConsole(String.format("Dyn.-Memories: %s", this.dynamicMemories.size()));
     }
 }

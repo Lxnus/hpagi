@@ -9,12 +9,12 @@ import com.bayesserver.learning.parameters.ParameterLearningOptions;
 import com.bayesserver.learning.parameters.ParameterLearningOutput;
 import com.bayesserver.learning.structure.*;
 import de.linusschmidt.hpagi.agent.Agent;
-import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.cognitive.CognitiveAlgorithm;
 import de.linusschmidt.hpagi.network.Hopfield;
 import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
 import de.linusschmidt.hpagi.utilities.Graph;
+import de.linusschmidt.hpagi.utilities.Printer;
 import gnu.prolog.database.PrologTextLoaderError;
 import gnu.prolog.term.AtomTerm;
 import gnu.prolog.vm.Environment;
@@ -32,6 +32,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
 
+    private static Printer printer = new Printer();
+
     public static String getFramework_Name() {
         return "HPAGI";
     }
@@ -42,7 +44,6 @@ public class Main {
         bayesianParameterTest();
         algorithmTest();
         prologTest();
-        bayesianNetworkBuilderTest();
         dynamicMemoryTest();
         cognitiveMultithreadingTest();
         //environmentTest();
@@ -109,25 +110,7 @@ public class Main {
             String recallNumber = value != 1 ? "0" : "1";
             out.append(recallNumber);
         }
-        System.out.println(out);
-    }
-
-    private static void bayesianNetworkBuilderTest() throws InconsistentEvidenceException {
-        BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder();
-        String[] nodeDescription = new String[] {"True", "False"};
-        String[] dataDescription = new String[] {"A", "B", "C", "D"};
-        List<double[]> data = new ArrayList<>();
-        for(int i = 0; i < 10000; i++) {
-            double[] vector = new double[dataDescription.length];
-            for(int j = 0; j < vector.length; j++) {
-                vector[j] = Math.random() < 0.5D ? 1 : 0;
-            }
-            data.add(vector);
-        }
-        bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
-        bayesianNetworkBuilder.generateBayesianNetwork();
-
-        bayesianNetworkBuilder.predict(new double[] { 0, 1, 1, 0 }, 0);
+        Main.printer.printConsole(out.toString());
     }
 
     private static void environmentTest() {
@@ -166,7 +149,7 @@ public class Main {
 
         Algorithms algorithms = new Algorithms();
         Graph.Node result = algorithms.bfs(graph, 3);
-        System.out.println("Result: " + result.getState());
+        Main.printer.printConsole(String.format("Result: %s", result.getState()));
     }
 
     private static void bayesianStructureTest() {
@@ -206,7 +189,7 @@ public class Main {
         PCStructuralLearningOptions structuralLearningOptions = new PCStructuralLearningOptions();
         PCStructuralLearningOutput structuralLearningOutput = (PCStructuralLearningOutput) structuralLearning.learn(evidenceReaderCommand, network.getNodes(), structuralLearningOptions);
         for(LinkOutput linkOutput : structuralLearningOutput.getLinkOutputs()) {
-            System.out.println(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
+            Main.printer.printConsole(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
         }
     }
 
@@ -260,11 +243,10 @@ public class Main {
         };
         EvidenceReaderCommand evidenceReaderCommand = new DefaultEvidenceReaderCommand(dataReaderCommand, Arrays.asList(variableReferences), readerOptions);
         ParameterLearningOutput parameterLearningOutput = parameterLearning.learn(evidenceReaderCommand, parameterLearningOptions);
-        System.out.println("Log likelihood: " + parameterLearningOutput.getLogLikelihood());
+        Main.printer.printConsole(String.format("Log likelihood: %s", parameterLearningOutput.getLogLikelihood()));
         for(int i = 0; i < parameterLearning.getNetwork().getNodes().get("Cluster").getDistribution().getTable().size(); i++) {
-            System.out.println(parameterLearning.getNetwork().getNodes().get("Cluster").getDistribution().getTable().get(i));
+            Main.printer.printConsole(String.format("%s", parameterLearning.getNetwork().getNodes().get("Cluster").getDistribution().getTable().get(i)));
         }
-
     }
 
     private static void translationTest() throws InterruptedException {

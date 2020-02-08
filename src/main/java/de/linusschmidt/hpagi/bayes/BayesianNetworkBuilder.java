@@ -7,10 +7,8 @@ import com.bayesserver.learning.parameters.OnlineLearning;
 import com.bayesserver.learning.parameters.OnlineLearningOptions;
 import com.bayesserver.learning.parameters.ParameterLearning;
 import com.bayesserver.learning.parameters.ParameterLearningOptions;
-import com.bayesserver.learning.structure.LinkOutput;
-import com.bayesserver.learning.structure.PCStructuralLearning;
-import com.bayesserver.learning.structure.PCStructuralLearningOptions;
-import com.bayesserver.learning.structure.PCStructuralLearningOutput;
+import com.bayesserver.learning.structure.*;
+import de.linusschmidt.hpagi.utilities.Printer;
 import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -22,11 +20,13 @@ public class BayesianNetworkBuilder {
     private String[] dataDescriptions;
 
     private Network network;
+    private Printer printer;
 
     private List<double[]> data;
 
     public BayesianNetworkBuilder() {
         this.network = new Network();
+        this.printer = new Printer();
     }
 
     public void setData(String[] nodeDescription, String[] dataDescriptions, List<double[]> data) {
@@ -65,18 +65,22 @@ public class BayesianNetworkBuilder {
         }
         inference.query(queryOptions, queryOutput);
 
-        Node node = inference.getNetwork().getNodes().get(this.dataDescriptions[idx]);
-        Table table = new Table(node.getDistribution().getTable());
-        double[] output = new double[binaryInputs.length];
-        for(int i = 0; i < binaryInputs.length; i++) {
-            //if(binaryInputs[i] == 1) {
+        for(String dataDescription : this.dataDescriptions) {
+            Node node = inference.getNetwork().getNodes().get(dataDescription);
+            Table table = new Table(node.getDistribution().getTable());
+            double[] output = new double[binaryInputs.length];
+            for(int i = 0; i < binaryInputs.length; i++) {
                 Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[idx]);
-                double prediction = table.get(variable.getStates().get(idx == 0 ? "False" : "True"));
-                System.out.println("Prediction: " + prediction);
+                State[] states = new State[table.getSortedVariables().size()];
+                for(int j = 0; j < states.length; j++) {
+                    states[j] = variable.getStates().get(idx == 0 ? "False" : "True");
+                }
+                double prediction = table.get(states);
+                this.printer.printConsole(String.format("Prediction: %s", prediction));
                 output[i] = prediction;
-            //}
+            }
+            Utilities.printVector(output);
         }
-        Utilities.printVector(output);
     }
 
     private void build() throws InconsistentEvidenceException {
@@ -102,11 +106,20 @@ public class BayesianNetworkBuilder {
     }
 
     private void createNetworkStructure(EvidenceReaderCommand evidenceReaderCommand) {
+        /*
         PCStructuralLearning structuralLearning = new PCStructuralLearning();
         PCStructuralLearningOptions structuralLearningOptions = new PCStructuralLearningOptions();
         PCStructuralLearningOutput structuralLearningOutput = (PCStructuralLearningOutput) structuralLearning.learn(evidenceReaderCommand, this.network.getNodes(), structuralLearningOptions);
         for(LinkOutput linkOutput : structuralLearningOutput.getLinkOutputs()) {
             System.out.println(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
+        }
+        */
+
+        ChowLiuStructuralLearning chowLiuStructuralLearning = new ChowLiuStructuralLearning();
+        ChowLiuStructuralLearningOptions chowLiuStructuralLearningOptions = new ChowLiuStructuralLearningOptions();
+        ChowLiuStructuralLearningOutput chowLiuStructuralLearningOutput = (ChowLiuStructuralLearningOutput) chowLiuStructuralLearning.learn(evidenceReaderCommand, this.network.getNodes(), chowLiuStructuralLearningOptions);
+        for(LinkOutput linkOutput : chowLiuStructuralLearningOutput.getLinkOutputs()) {
+            this.printer.printConsole(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
         }
     }
 
@@ -119,6 +132,8 @@ public class BayesianNetworkBuilder {
         OnlineLearning onlineLearning = new OnlineLearning(this.network, new RelevanceTreeInferenceFactory());
         OnlineLearningOptions onlineLearningOptions = new OnlineLearningOptions();
         onlineLearning.adapt(evidence, onlineLearningOptions);
+
+
     }
 
     private EvidenceReaderCommand generateEvidence(DataTableDataReaderCommand dataReaderCommand, List<VariableReference> variableReferences) {
@@ -142,29 +157,27 @@ public class BayesianNetworkBuilder {
     private String[] processedNodeData(double[] preData) {
         String[] processed = new String[preData.length];
         for(int i = 0; i < processed.length; i++) {
-            processed[i] = preData[i] == 1 ? "True" : "False";
+            processed[i] = this.nodeDescription[(int) preData[i]];
         }
         return processed;
     }
 
-    public void printNetwork() {
+    private void printNetwork() {
         for(Node node : this.network.getNodes()) {
-            System.out.println("Node[" + node.getName() + "]:");
+            this.printer.printConsole(String.format("Node[%s]:", node.getName()));
+            this.printer.printConsoleSL("> Links: ");
             if(node.getLinks().size() != 0) {
+                System.out.println();
                 for (Link link : node.getLinks()) {
-                    System.out.println("> Link: " + link.getFrom().getName() + " -> " + link.getTo().getName());
+                    this.printer.printConsole(String.format("   Link: %s -> %s", link.getFrom().getName(), link.getTo().getName()));
                 }
             } else {
-                System.out.println(" > No links.");
+                this.printer.printConsole("No links.");
             }
-            System.out.println(" > Distributions: ");
+            this.printer.printConsole("> Distributions: ");
             for(int i = 0; i < node.getDistribution().getTable().size(); i++) {
-                System.out.println("  => [" + i + "]: " + node.getDistribution().getTable().get(i));
+                this.printer.printConsole(String.format("    => [%s]: %s", i, node.getDistribution().getTable().get(i)));
             }
         }
-    }
-
-    public Network getNetwork() {
-        return network;
     }
 }
