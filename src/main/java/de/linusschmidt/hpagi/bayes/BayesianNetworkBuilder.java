@@ -15,7 +15,7 @@ import com.bayesserver.learning.structure.PCStructuralLearningOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BayesianNetworkBuilder {
+public abstract class BayesianNetworkBuilder {
 
     private String[] nodeDescription;
     private String[] dataDescriptions;
@@ -34,14 +34,13 @@ public class BayesianNetworkBuilder {
         this.dataDescriptions = dataDescriptions;
     }
 
-    public Network generateBayesianNetwork() {
+    public void generateBayesianNetwork() {
         try {
             this.build();
         } catch (InconsistentEvidenceException e) {
             e.printStackTrace();
         }
         this.network.validate(new ValidationOptions());
-        return this.network;
     }
 
     public void predict(double[] binaryInputs, int idx) throws InconsistentEvidenceException {
@@ -124,12 +123,20 @@ public class BayesianNetworkBuilder {
         for(String dataDescription : this.dataDescriptions) {
             dataColumns.add(dataDescription, String.class);
         }
-        DataRowCollection dataRows = dataTable.getRows();
-        for(double[] datum : data) {
-            String[] procData = this.processedNodeData(datum);
-            dataRows.add(procData[0], procData[1], procData[2], procData[3]);
-        }
+        List<String[]> processedData = this.processData(data);
+        generateDataRowCollection(dataTable, processedData);
         return dataTable;
+    }
+
+    public abstract void generateDataRowCollection(DataTable dataTable, List<String[]> data);
+
+    private List<String[]> processData(List<double[]> data) {
+        List<String[]> processedData = new ArrayList<>();
+        for(double[] vec : data) {
+            String[] procData = this.processedNodeData(vec);
+            processedData.add(procData);
+        }
+        return processedData;
     }
 
     private String[] processedNodeData(double[] preData) {
@@ -138,5 +145,9 @@ public class BayesianNetworkBuilder {
             processed[i] = preData[i] == 1 ? "True" : "False";
         }
         return processed;
+    }
+
+    public Network getNetwork() {
+        return network;
     }
 }

@@ -100,7 +100,15 @@ public class Main {
     }
 
     private static void bayesianNetworkBuilderTest() throws InconsistentEvidenceException {
-        BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder();
+        BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder() {
+            @Override
+            public void generateDataRowCollection(DataTable dataTable, List<String[]> data) {
+                DataRowCollection dataRows = dataTable.getRows();
+                for(String[] vec : data) {
+                    dataRows.add(vec[0], vec[1], vec[2], vec[3]);
+                }
+            }
+        };
         String[] nodeDescription = new String[] {"True", "False"};
         String[] dataDescription = new String[] {"A", "B", "C", "D"};
         List<double[]> data = new ArrayList<>();
@@ -112,7 +120,9 @@ public class Main {
             data.add(vector);
         }
         bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
-        Network network = bayesianNetworkBuilder.generateBayesianNetwork();
+        bayesianNetworkBuilder.generateBayesianNetwork();
+
+        Network network = bayesianNetworkBuilder.getNetwork();
 
         for(Node node : network.getNodes()) {
             System.out.println("Node[" + node.getName() + "]:");
