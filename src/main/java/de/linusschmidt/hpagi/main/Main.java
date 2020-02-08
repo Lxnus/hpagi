@@ -10,6 +10,7 @@ import com.bayesserver.learning.parameters.ParameterLearningOutput;
 import com.bayesserver.learning.structure.*;
 import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
+import de.linusschmidt.hpagi.cognitive.CognitiveAlgorithm;
 import de.linusschmidt.hpagi.network.Hopfield;
 import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
@@ -43,7 +44,23 @@ public class Main {
         prologTest();
         bayesianNetworkBuilderTest();
         dynamicMemoryTest();
-        environmentTest();
+        cognitiveMultithreadingTest();
+        //environmentTest();
+    }
+
+    private static void cognitiveMultithreadingTest() throws InterruptedException {
+        List<double[]> data = new ArrayList<>();
+        for(int i = 0; i < 10000; i++) {
+            double[] vector = new double[100];
+            for(int j = 0; j < vector.length; j++) {
+                vector[j] = Math.random() < 0.5D ? 1 : 0;
+            }
+            data.add(vector);
+        }
+
+        CognitiveAlgorithm cognitiveAlgorithm = new CognitiveAlgorithm();
+        cognitiveAlgorithm.setData(data);
+        cognitiveAlgorithm.print();
     }
 
     private static void dynamicMemoryTest() {
