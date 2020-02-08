@@ -15,12 +15,12 @@ public class CognitiveAlgorithm {
 
     private Printer printer;
 
-    private LinkedList<Hopfield> dynamicMemory;
+    private LinkedList<Hopfield> dynamicMemories;
 
     public CognitiveAlgorithm() {
         this.printer = new Printer();
 
-        this.dynamicMemory = new LinkedList<>();
+        this.dynamicMemories = new LinkedList<>();
     }
 
     public void setData(List<double[]> data) throws InterruptedException {
@@ -30,6 +30,13 @@ public class CognitiveAlgorithm {
         final List<Callable<Void>> workers = this.createWorkers(partitions);
         executorService.invokeAll(workers);
         executorService.shutdown();
+    }
+
+    public void cognitivePrediction(double[] X) {
+        for(Hopfield dynamicMemory : this.dynamicMemories) {
+            this.printer.printConsole("..............................");
+            dynamicMemory.recreateTo(0.5, X, true);
+        }
     }
 
     private synchronized List<Callable<Void>> createWorkers(final List<List<double[]>> partitions) {
@@ -57,10 +64,10 @@ public class CognitiveAlgorithm {
     }
 
     private synchronized void addDynamicMemory(final Hopfield hopfield) {
-        this.dynamicMemory.add(hopfield);
+        this.dynamicMemories.add(hopfield);
     }
 
     public void print() {
-        this.printer.printConsole("Dyn.-Memories: " + this.dynamicMemory.size());
+        this.printer.printConsole("Dyn.-Memories: " + this.dynamicMemories.size());
     }
 }

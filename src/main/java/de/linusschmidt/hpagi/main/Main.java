@@ -50,8 +50,8 @@ public class Main {
 
     private static void cognitiveMultithreadingTest() throws InterruptedException {
         List<double[]> data = new ArrayList<>();
-        for(int i = 0; i < 10000; i++) {
-            double[] vector = new double[100];
+        for(int i = 0; i < 100; i++) {
+            double[] vector = new double[10];
             for(int j = 0; j < vector.length; j++) {
                 vector[j] = Math.random() < 0.5D ? 1 : 0;
             }
@@ -61,6 +61,7 @@ public class Main {
         CognitiveAlgorithm cognitiveAlgorithm = new CognitiveAlgorithm();
         cognitiveAlgorithm.setData(data);
         cognitiveAlgorithm.print();
+        cognitiveAlgorithm.cognitivePrediction(new double[] { 0, 1, 1, 1, 0, 0, 0, 1, 1, 0 });
     }
 
     private static void dynamicMemoryTest() {

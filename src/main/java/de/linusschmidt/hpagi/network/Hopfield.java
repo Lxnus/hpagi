@@ -1,5 +1,8 @@
 package de.linusschmidt.hpagi.network;
 
+import de.linusschmidt.hpagi.utilities.MathUtilities;
+import de.linusschmidt.hpagi.utilities.Printer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +14,8 @@ public class Hopfield {
 
     private double[][] weights;
 
+    private Printer printer;
+
     private List<double[]> data;
 
     public Hopfield(int neurons) {
@@ -19,6 +24,8 @@ public class Hopfield {
         this.storage = new double[neurons];
 
         this.weights = new double[neurons][neurons];
+
+        this.printer = new Printer();
 
         this.data = new ArrayList<>();
     }
@@ -40,6 +47,23 @@ public class Hopfield {
             }
         }
         return output;
+    }
+
+    public void recreateTo(double minDistance, double[] input, boolean debug) {
+        int iteration = 0;
+        double distance;
+        double[] recreation = input;
+        do {
+            recreation = this.recreate(recreation, 10);
+            distance = MathUtilities.distance(input, recreation);
+            if(debug) {
+                this.printer.printConsole(String.format("Iteration: %s Distance: %s", iteration, distance));
+            }
+            iteration++;
+            if(iteration > 100) {
+                break;
+            }
+        } while (distance > minDistance);
     }
 
     public void train() {
