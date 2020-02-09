@@ -25,14 +25,14 @@ public class Printer {
     }
 
     public void printConsole(String message) {
-        System.out.println("[" + this.getTime() + "][" + Main.getFramework_Name() + "]: " + message);
+        System.out.println(String.format("[%s][%s]: %s", this.getTime(), Main.getFramework_Name(), message));
     }
 
     public void printConsoleSL(String message) {
-        System.out.print("[" + this.getTime() + "][" + Main.getFramework_Name() + "]: " + message);
+        System.out.print(String.format("[%s][%s]: %s", this.getTime(), Main.getFramework_Name(), message));
     }
 
     public void printConsoleError(String message) {
-        System.err.println("[" + this.getTime() + "][" + Main.getFramework_Name() + "]: " + message);
+        System.err.println(String.format("[%s][%s]: %s", this.getTime(), Main.getFramework_Name(), message));
     }
 }
