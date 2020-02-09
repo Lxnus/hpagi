@@ -11,33 +11,23 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Environment extends JPanel implements IEnvironment {
+public class Environment implements IEnvironment {
 
     private Entity npc;
     private Agent agent;
-    private Printer printer;
-    private FileUtil fileUtil;
     private Dimension dimension;
 
     private Entity targetNPC;
-
-    private List<Wall> walls;
 
     public Environment(Agent agent) {
         this.agent = agent;
 
         this.agent.setEnvironment(this);
 
-        this.printer = new Printer();
-        this.fileUtil = new FileUtil();
         this.dimension = new Dimension(500, 500);
-
-        this.walls = new ArrayList<>();
 
         this.buildNPC();
         this.buildTargetNPC();
-        this.load();
-        this.draw();
     }
 
     private void buildNPC() {
@@ -52,50 +42,28 @@ public class Environment extends JPanel implements IEnvironment {
         this.targetNPC = new Entity(x, y);
     }
 
-    private void draw() {
-        JFrame frame = new JFrame();
-        frame.add(this);
-        frame.setSize(this.getPreferredSize());
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setVisible(true);
+    @Override
+    public double[] possibleActions() {
+        return new double[0];
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void apply(double s) {}
 
-        double[] state = agent.getBinaryState();
-        int x = state[0] == 1 ? 1 : state[1] == 1 ? -1 : 0;
-        int y = state[2] == 1 ? 1 : state[3] == 1 ? -1 : 0;
-        if(this.npc.getX() > 0 && this.npc.getX() < this.dimension.getWidth() && this.npc.getY() > 0 && this.npc.getY() < this.dimension.getHeight()) {
-            this.npc.update(x * 10, y * 10);
-        }
-
-        g.setColor(Color.BLACK);
-        for(Wall wall : this.walls) {
-            if(wall.isVisible()) {
-                g.fillRect(wall.getX(), wall.getY(), 10, 10);
-            }
-        }
-        g.setColor(Color.GREEN);
-        g.fillRect(this.npc.getX(), this.npc.getY(), 10, 10);
-
-        g.setColor(Color.RED);
-        g.fillRect(this.targetNPC.getX(), this.targetNPC.getY(), 10, 10);
-
-        try {
-            Thread.sleep(10);
-        } catch (Exception ignored) {}
-        this.repaint();
+    @Override
+    public double getReward() {
+        return 1.0D / MathUtilities.distance(this.npc.getX(), this.targetNPC.getX(), this.npc.getY(), this.targetNPC.getY());
     }
 
     @Override
-    public Dimension getPreferredSize() {
-        return this.dimension;
+    public boolean isFinish() {
+        return false;
     }
 
+    @Override
+    public void reset() {}
+
+    /*
     private void load() {
         this.printer.printConsole("Loading environment walls...");
         BufferedReader bufferedReader;
@@ -112,49 +80,6 @@ public class Environment extends JPanel implements IEnvironment {
         this.printer.printConsole("done. Load!");
     }
 
-    @Override
-    public void apply(double s) {}
-
-    @Override
-    public double[] possibleActions() {
-        return new double[0];
-    }
-
-    @Override
-    public void setPossibleActions(double[] actions) {}
-
-    @Override
-    public void setCoreTranslation(double[] actions) {}
-
-    @Override
-    public double getEnvAction(double coreAction) {
-        return 0;
-    }
-
-    @Override
-    public double getCoreAction(double environmentAction) {
-        return 0;
-    }
-
-    @Override
-    public double getReward() {
-        return 1.0D / MathUtilities.distance(this.npc.getX(), this.targetNPC.getX(), this.npc.getY(), this.targetNPC.getY());
-    }
-
-    @Override
-    public double optimization() {
-        return 0;
-    }
-
-    @Override
-    public boolean isFinish() {
-        return false;
-    }
-
-    @Override
-    public void reset() {}
-
-    /*
     private void save() {
         this.printer.printConsole("Saving environment walls...");
         BufferedWriter bufferedWriter;

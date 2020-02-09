@@ -46,7 +46,7 @@ public class MCTSNode {
     private void expand(IEnvironment environment) {
         if(this.isLeaf()) {
             for(int i = 0; i < environment.possibleActions().length; i++) {
-                double s = environment.getCoreAction(environment.possibleActions()[i]);
+                double s = environment.possibleActions()[i];
                 MCTSNode node = new MCTSNode(s);
                 this.addNode(node);
             }
@@ -65,13 +65,13 @@ public class MCTSNode {
         while(!current.isLeaf() && !isFinish) {
             current = current.select();
             visited.add(current);
-            environment.apply(environment.getEnvAction(current.s));
+            environment.apply(current.s);
             isFinish = environment.isFinish();
         }
         if(!isFinish) {
             current.expand(environment);
             current = this.selection(environment);
-            environment.apply(environment.getEnvAction(current.s));
+            environment.apply(current.s);
         }
         for(MCTSNode node : visited) {
             node.update(environment.getReward());
@@ -84,7 +84,7 @@ public class MCTSNode {
         boolean isFinish = environment.isFinish();
         while(!current.isLeaf() && !isFinish) {
             current = current.select();
-            environment.apply(environment.getEnvAction(current.s));
+            environment.apply(current.s);
             isFinish = environment.isFinish();
         }
         return current;
