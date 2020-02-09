@@ -70,14 +70,16 @@ public class BayesianNetworkBuilder {
             Table table = new Table(node.getDistribution().getTable());
             double[] output = new double[binaryInputs.length];
             for(int i = 0; i < binaryInputs.length; i++) {
-                Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[idx]);
                 State[] states = new State[table.getSortedVariables().size()];
-                for(int j = 0; j < states.length; j++) {
-                    states[j] = variable.getStates().get(idx == 0 ? "False" : "True");
+                for(int j = 0; j < table.getSortedVariables().size(); j++) {
+                    for(int k = 0; k < states.length; k++) {
+                        Variable current = table.getSortedVariables().get(j).getVariable();
+                        states[k] = current.getStates().get(idx == 0 ? "False" : "True");
+                    }
                 }
                 double prediction = table.get(states);
-                this.printer.printConsole(String.format("Prediction: %s", prediction));
                 output[i] = prediction;
+                this.printer.printConsole(String.format("Prediction: %s", prediction));
             }
             Utilities.printVector(output);
         }
