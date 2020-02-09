@@ -1,0 +1,42 @@
+package de.linusschmidt.hpagi.core.neuralnet.utilities;
+
+import de.linusschmidt.hpagi.core.neuralnet.neurons.INeuron;
+
+public class Connection {
+
+    /**
+     * Author: Linus Schmidt!
+     * All rights reserved!
+     */
+
+	private double weight;
+
+	private INeuron fromNeuron;
+	private INeuron toNeuron;
+	
+	public Connection(double weight, INeuron fromNeuron, INeuron toNeuron) {
+		this.weight = weight;
+		this.fromNeuron = fromNeuron;
+		this.toNeuron = toNeuron;
+	}
+
+	public void addWeight(double adjustment) {
+		this.weight += adjustment;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	public INeuron getFromNeuron() {
+		return fromNeuron;
+	}
+
+	public INeuron getToNeuron() {
+		return toNeuron;
+	}
+}

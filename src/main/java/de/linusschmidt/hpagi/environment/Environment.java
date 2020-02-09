@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Environment extends JPanel {
+public class Environment extends JPanel implements IEnvironment {
 
     private Entity npc;
     private Agent agent;
@@ -112,9 +112,47 @@ public class Environment extends JPanel {
         this.printer.printConsole("done. Load!");
     }
 
+    @Override
+    public void apply(double s) {}
+
+    @Override
+    public double[] possibleActions() {
+        return new double[0];
+    }
+
+    @Override
+    public void setPossibleActions(double[] actions) {}
+
+    @Override
+    public void setCoreTranslation(double[] actions) {}
+
+    @Override
+    public double getEnvAction(double coreAction) {
+        return 0;
+    }
+
+    @Override
+    public double getCoreAction(double environmentAction) {
+        return 0;
+    }
+
+    @Override
     public double getReward() {
         return 1.0D / MathUtilities.distance(this.npc.getX(), this.targetNPC.getX(), this.npc.getY(), this.targetNPC.getY());
     }
+
+    @Override
+    public double optimization() {
+        return 0;
+    }
+
+    @Override
+    public boolean isFinish() {
+        return false;
+    }
+
+    @Override
+    public void reset() {}
 
     /*
     private void save() {

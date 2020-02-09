@@ -40,11 +40,7 @@ public class BayesianNetworkBuilder {
     }
 
     public void generateBayesianNetwork() {
-        try {
-            this.build();
-        } catch (InconsistentEvidenceException e) {
-            e.printStackTrace();
-        }
+        this.build();
         this.network.validate(new ValidationOptions());
         this.printNetwork();
     }
@@ -112,7 +108,7 @@ public class BayesianNetworkBuilder {
         */
     }
 
-    private void build() throws InconsistentEvidenceException {
+    private void build() {
         DataTable dataTable = this.generateDataTable(this.data);
         DataTableDataReaderCommand dataReaderCommand = new DataTableDataReaderCommand(dataTable);
         this.generateNetworkNodes();
