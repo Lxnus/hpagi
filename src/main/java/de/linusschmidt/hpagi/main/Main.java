@@ -28,7 +28,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
 
@@ -46,7 +45,7 @@ public class Main {
         prologTest();
         dynamicMemoryTest();
         cognitiveMultithreadingTest();
-        //environmentTest();
+        environmentTest();
     }
 
     private static void cognitiveMultithreadingTest() throws InterruptedException, InconsistentEvidenceException {
@@ -114,8 +113,7 @@ public class Main {
     }
 
     private static void environmentTest() {
-        Agent agent = new Agent(null);
-        new de.linusschmidt.hpagi.environment.Environment(agent);
+        new Agent();
     }
 
     private static void prologTest() {
