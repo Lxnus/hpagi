@@ -65,24 +65,31 @@ public class BayesianNetworkBuilder {
         }
         inference.query(queryOptions, queryOutput);
 
+        int index = 0;
+        double result = 0.0D;
+        double[] output = new double[this.dataDescriptions.length];
         for(String dataDescription : this.dataDescriptions) {
+            double smallResult = 0.0D;
             Node node = inference.getNetwork().getNodes().get(dataDescription);
             Table table = new Table(node.getDistribution().getTable());
-            double[] output = new double[binaryInputs.length];
             for(int i = 0; i < binaryInputs.length; i++) {
                 State[] states = new State[table.getSortedVariables().size()];
                 for(int j = 0; j < table.getSortedVariables().size(); j++) {
                     for(int k = 0; k < states.length; k++) {
                         Variable current = table.getSortedVariables().get(j).getVariable();
-                        states[k] = current.getStates().get(idx == 0 ? "False" : "True");
+                        states[k] = current.getStates().get(Math.round(Math.random())/*idx*/ == 0 ? "False" : "True");
                     }
                 }
                 double prediction = table.get(states);
-                output[i] = prediction;
+                smallResult += prediction;
                 this.printer.printConsole(String.format("Prediction: %s", prediction));
             }
-            Utilities.printVector(output);
+            result += smallResult;
+            output[index++] = Math.round(smallResult / binaryInputs.length);
+            this.printer.printConsole(String.format("Small-Result: %s", (smallResult / binaryInputs.length)));
         }
+        this.printer.printConsole(String.format("Result: %s", (result / (this.dataDescriptions.length * binaryInputs.length))));
+        Utilities.printVector(output);
     }
 
     private void build() throws InconsistentEvidenceException {

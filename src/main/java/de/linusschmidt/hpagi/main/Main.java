@@ -68,7 +68,7 @@ public class Main {
         data.add(new double[] { 1, 0, 0, 1 });
 
         double[] X = new double[] {
-                1, 0, 1, 1
+                1, 0, 1, 0
         };
 
         CognitiveAlgorithm cognitiveAlgorithm = new CognitiveAlgorithm();
