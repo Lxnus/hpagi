@@ -1,19 +1,16 @@
 package de.linusschmidt.hpagi.environment;
 
 import de.linusschmidt.hpagi.utilities.MathUtilities;
-import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.awt.*;
 
 public class Environment implements IEnvironment {
 
     private Entity npc;
-    private Printer printer;
     private Entity targetNPC;
     private Dimension dimension;
 
     public Environment() {
-        this.printer = new Printer();
         this.dimension = new Dimension(5, 5);
 
         this.buildNPC();
@@ -55,10 +52,7 @@ public class Environment implements IEnvironment {
     public boolean isFinish() {
         if(this.npc.getX() < 0 || this.npc.getX() > this.dimension.getWidth() || this.npc.getY() < 0 || this.npc.getY() > this.dimension.getHeight()) {
             return true;
-        } else if(this.getReward() == 1) {
-            return true;
-        }
-        return false;
+        } else return this.getReward() == 1;
     }
 
     @Override
