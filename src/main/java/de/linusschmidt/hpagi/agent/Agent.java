@@ -1,45 +1,19 @@
 package de.linusschmidt.hpagi.agent;
 
-import de.linusschmidt.hpagi.environment.Environment;
-import de.linusschmidt.hpagi.translation.Translator;
-
-import java.util.ArrayList;
-import java.util.List;
+import de.linusschmidt.hpagi.core.CoreEngine;
+import de.linusschmidt.hpagi.environment.IEnvironment;
 
 public class Agent {
 
-    private Translator translator;
-    private Environment environment;
+    private CoreEngine coreEngine;
 
-    private List<double[]> history;
+    public Agent() {}
 
-    public Agent(Translator translator) {
-        translator = translator;
-
-        this.history = new ArrayList<>();
+    public void setEnvironment(IEnvironment environment) {
+        this.coreEngine = new CoreEngine(environment);
     }
 
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
-
-    public double[] getBinaryState() {
-        double[] binaryH = new double[4];
-        for(int i = 0; i < binaryH.length; i++) {
-            binaryH[i] = Math.random() < 0.5D ? 1 : 0;
-        }
-        return binaryH; //new double[] {0, 0, 0, 0};
-    }
-
-    private void executeBinary(double[] binaryVec) {
-        for(double binary : binaryVec) {
-            if(binary != 0) {
-
-            }
-        }
-    }
-
-    private double[] generateHistory() {
-        return null;
+    public void run() {
+        this.coreEngine.run(100);
     }
 }
