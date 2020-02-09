@@ -4,7 +4,6 @@ import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Translator {
 
@@ -12,8 +11,8 @@ public class Translator {
 
     private Printer printer;
 
-    private ConcurrentHashMap<AtomicReference<String>, AtomicInteger> translation;
-    private ConcurrentHashMap<AtomicInteger, AtomicReference<String>> reverseTranslation;
+    private ConcurrentHashMap<String, Integer> translation;
+    private ConcurrentHashMap<Integer, String> reverseTranslation;
 
     public Translator() {
         this.printer = new Printer();
@@ -28,20 +27,20 @@ public class Translator {
         this.reverseTranslation = new ConcurrentHashMap<>();
     }
 
-    public synchronized void add(AtomicReference<String> key) {
+    public synchronized void add(String key) {
         this.printer.printConsole(String.format("CurrentTimeMillis: %s", System.currentTimeMillis()));
-        AtomicInteger reference = this.translation.get(key);
+        Integer reference = this.translation.get(key);
         if(reference == null) {
-            this.translation.put(key, new AtomicInteger(this.idx.getAndIncrement()));
-            this.reverseTranslation.put(new AtomicInteger(this.idx.get()), key);
+            this.translation.put(key, this.idx.getAndIncrement());
+            this.reverseTranslation.put(this.idx.get(), key);
         }
     }
 
-    public synchronized AtomicInteger get(AtomicReference<String> key) {
+    public synchronized Integer get(String key) {
         return this.translation.get(key);
     }
 
-    public synchronized AtomicReference<String> get(AtomicInteger value) {
+    public synchronized String get(Integer value) {
         return this.reverseTranslation.get(value);
     }
 

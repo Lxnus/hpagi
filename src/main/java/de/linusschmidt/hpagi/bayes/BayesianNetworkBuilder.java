@@ -3,15 +3,13 @@ package de.linusschmidt.hpagi.bayes;
 import com.bayesserver.*;
 import com.bayesserver.data.*;
 import com.bayesserver.inference.*;
-import com.bayesserver.learning.parameters.OnlineLearning;
-import com.bayesserver.learning.parameters.OnlineLearningOptions;
-import com.bayesserver.learning.parameters.ParameterLearning;
-import com.bayesserver.learning.parameters.ParameterLearningOptions;
+import com.bayesserver.learning.parameters.*;
 import com.bayesserver.learning.structure.*;
+import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Printer;
-import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BayesianNetworkBuilder {
@@ -21,18 +19,24 @@ public class BayesianNetworkBuilder {
 
     private Network network;
     private Printer printer;
+    private Translator translator;
 
     private List<double[]> data;
 
     public BayesianNetworkBuilder() {
         this.network = new Network();
         this.printer = new Printer();
+        this.translator = new Translator();
     }
 
     public void setData(String[] nodeDescription, String[] dataDescriptions, List<double[]> data) {
         this.data = data;
         this.nodeDescription = nodeDescription;
         this.dataDescriptions = dataDescriptions;
+
+        for(String dataDescription : this.dataDescriptions) {
+            this.translator.add(dataDescription);
+        }
     }
 
     public void generateBayesianNetwork() {
@@ -53,6 +57,7 @@ public class BayesianNetworkBuilder {
 
         queryOptions.setDecisionAlgorithm(DecisionAlgorithm.SINGLE_POLICY_UPDATING);
 
+        LinkedList<Table> tables = new LinkedList<>();
         for(int i = 0; i < binaryInputs.length; i++) {
             if(binaryInputs[i] == 1 && i != idx) {
                 Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[i]);
@@ -62,9 +67,23 @@ public class BayesianNetworkBuilder {
             Node node = inference.getNetwork().getNodes().get(this.dataDescriptions[i]);
             Table table = new Table(node.getDistribution().getTable());
             inference.getQueryDistributions().add(table);
+            tables.add(table);
         }
         inference.query(queryOptions, queryOutput);
 
+        for(Table table : tables) {
+            State[] states = new State[table.getSortedVariables().size()];
+            this.printer.printConsole(String.format("Size: %s", states.length));
+            for(int i = 0; i < table.getSortedVariables().size(); i++) {
+                Variable variable = table.getSortedVariables().get(i).getVariable();
+                String strState = Math.round(binaryInputs[this.translator.get(variable.getName())]) == 0 ? "False" : "True";
+                State state = variable.getStates().get(strState);
+                states[i] = state;
+            }
+            double prediction = table.get(states);
+            this.printer.printConsole(String.format("Prediction: %s", prediction));
+        }
+        /*
         int index = 0;
         double result = 0.0D;
         double[] output = new double[this.dataDescriptions.length];
@@ -77,7 +96,7 @@ public class BayesianNetworkBuilder {
                 for(int j = 0; j < table.getSortedVariables().size(); j++) {
                     for(int k = 0; k < states.length; k++) {
                         Variable current = table.getSortedVariables().get(j).getVariable();
-                        states[k] = current.getStates().get(Math.round(Math.random())/*idx*/ == 0 ? "False" : "True");
+                        states[k] = current.getStates().get(idx == 0 ? "False" : "True");
                     }
                 }
                 double prediction = table.get(states);
@@ -90,6 +109,7 @@ public class BayesianNetworkBuilder {
         }
         this.printer.printConsole(String.format("Result: %s", (result / (this.dataDescriptions.length * binaryInputs.length))));
         Utilities.printVector(output);
+        */
     }
 
     private void build() throws InconsistentEvidenceException {
@@ -132,17 +152,12 @@ public class BayesianNetworkBuilder {
         }
     }
 
-    private void createDistributions(EvidenceReaderCommand evidenceReaderCommand) throws InconsistentEvidenceException {
+    private void createDistributions(EvidenceReaderCommand evidenceReaderCommand) {
         ParameterLearning parameterLearning = new ParameterLearning(this.network, new RelevanceTreeInferenceFactory());
         ParameterLearningOptions parameterLearningOptions = new ParameterLearningOptions();
+        parameterLearningOptions.setDecisionPostProcessing(DecisionPostProcessingMethod.PROBABILITIES);
+        parameterLearningOptions.setConvergenceMethod(ConvergenceMethod.PARAMETERS);
         parameterLearning.learn(evidenceReaderCommand, parameterLearningOptions);
-
-        Evidence evidence = new DefaultEvidence(this.network);
-        OnlineLearning onlineLearning = new OnlineLearning(this.network, new RelevanceTreeInferenceFactory());
-        OnlineLearningOptions onlineLearningOptions = new OnlineLearningOptions();
-        onlineLearning.adapt(evidence, onlineLearningOptions);
-
-
     }
 
     private EvidenceReaderCommand generateEvidence(DataTableDataReaderCommand dataReaderCommand, List<VariableReference> variableReferences) {

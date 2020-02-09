@@ -256,13 +256,13 @@ public class Main {
 
         Collection<Callable<Void>> runnables = new CopyOnWriteArrayList<>();
         runnables.add(() -> {
-            AtomicReference<String> text = new AtomicReference<>("Dies ist ein Text");
-            translator.add(text);
+            //AtomicReference<String> text = new AtomicReference<>("Dies ist ein Text");
+            translator.add("Dies ist ein Text");
             return null;
         });
         runnables.add(() -> {
-            AtomicReference<String> text2 = new AtomicReference<>("Dies ist eine weiterer Text");
-            translator.add(text2);
+            //AtomicReference<String> text2 = new AtomicReference<>("Dies ist eine weiterer Text");
+            translator.add("Dies ist eine weiterer Text");
             return null;
         });
         executor.invokeAll(runnables);
