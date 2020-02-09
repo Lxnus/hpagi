@@ -10,7 +10,7 @@ public class Entity {
         this.y = y;
     }
 
-    public void update(int x, int y) {
+    void update(int x, int y) {
         this.x += x;
         this.y += y;
     }
@@ -19,7 +19,15 @@ public class Entity {
         return x;
     }
 
+    void setX(int x) {
+        this.x = x;
+    }
+
     int getY() {
         return y;
+    }
+
+    void setY(int y) {
+        this.y = y;
     }
 }

@@ -1,30 +1,20 @@
 package de.linusschmidt.hpagi.environment;
 
-import de.linusschmidt.hpagi.agent.Agent;
-import de.linusschmidt.hpagi.utilities.FileUtil;
 import de.linusschmidt.hpagi.utilities.MathUtilities;
 import de.linusschmidt.hpagi.utilities.Printer;
 
-import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Environment implements IEnvironment {
 
     private Entity npc;
-    private Agent agent;
+    private Printer printer;
+    private Entity targetNPC;
     private Dimension dimension;
 
-    private Entity targetNPC;
-
-    public Environment(Agent agent) {
-        this.agent = agent;
-
-        this.agent.setEnvironment(this);
-
-        this.dimension = new Dimension(500, 500);
+    public Environment() {
+        this.printer = new Printer();
+        this.dimension = new Dimension(5, 5);
 
         this.buildNPC();
         this.buildTargetNPC();
@@ -44,11 +34,17 @@ public class Environment implements IEnvironment {
 
     @Override
     public double[] possibleActions() {
-        return new double[0];
+        return new double[] { 0, 1 };
     }
 
     @Override
-    public void apply(double s) {}
+    public void apply(double s) {
+        if(s == 0) {
+            this.npc.update(1, 0);
+        } else if(s == 1) {
+            this.npc.update(0, 1);
+        }
+    }
 
     @Override
     public double getReward() {
@@ -57,11 +53,21 @@ public class Environment implements IEnvironment {
 
     @Override
     public boolean isFinish() {
+        if(this.npc.getX() < 0 || this.npc.getX() > this.dimension.getWidth() || this.npc.getY() < 0 || this.npc.getY() > this.dimension.getHeight()) {
+            return true;
+        } else if(this.getReward() == 1) {
+            return true;
+        }
         return false;
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+        int x = (int) Math.round(Math.random() * this.dimension.getWidth());
+        int y = (int) Math.round(Math.random() * this.dimension.getHeight());
+        this.npc.setX(x);
+        this.npc.setY(y);
+    }
 
     /*
     private void load() {

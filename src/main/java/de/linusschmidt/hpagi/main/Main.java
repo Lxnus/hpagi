@@ -10,6 +10,7 @@ import com.bayesserver.learning.parameters.ParameterLearningOutput;
 import com.bayesserver.learning.structure.*;
 import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.cognitive.CognitiveAlgorithm;
+import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.network.Hopfield;
 import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
@@ -113,7 +114,10 @@ public class Main {
     }
 
     private static void environmentTest() {
-        new Agent();
+        Agent agent = new Agent();
+        IEnvironment environment = new de.linusschmidt.hpagi.environment.Environment();
+        agent.setEnvironment(environment);
+        agent.run();
     }
 
     private static void prologTest() {
