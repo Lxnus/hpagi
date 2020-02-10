@@ -16,10 +16,14 @@ import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
 import de.linusschmidt.hpagi.utilities.Graph;
 import de.linusschmidt.hpagi.utilities.Printer;
+import de.linusschmidt.hpagi.utilities.Utilities;
 import gnu.prolog.database.PrologTextLoaderError;
 import gnu.prolog.term.AtomTerm;
 import gnu.prolog.vm.Environment;
 import gnu.prolog.vm.Interpreter;
+import smile.math.MathEx;
+import smile.sequence.HMM;
+import smile.stat.distribution.EmpiricalDistribution;
 
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -89,7 +93,42 @@ public class Main {
     }
 
     private static void testHiddenMarkovModel() {
+        double[][] a = new double[][] {
+                {0.8, 0.2},
+                {0.2, 0.8}
+        };
+        double[][] b = new double[][] {
+                {0.1, 0.9},
+                {0.9, 0.1}
+        };
+        EmpiricalDistribution empiricalDistribution = new EmpiricalDistribution(new double[] {0.2, 0.8});
+        EmpiricalDistribution[] transition = new EmpiricalDistribution[a.length];
+        for(int i = 0; i < transition.length; i++) {
+            transition[i] = new EmpiricalDistribution(a[i]);
+        }
+        EmpiricalDistribution[] emission = new EmpiricalDistribution[b.length];
+        for(int i = 0; i < b.length; i++) {
+            emission[i] = new EmpiricalDistribution(b[i]);
+        }
+        int[][] sequences = new int[1000][];
+        int[][] labels = new int[1000][];
+        for(int i = 0; i < sequences.length; i++) {
+            sequences[i] = new int[30 * (MathEx.randomInt(5) + 1)];
+            labels[i] = new int[sequences[i].length];
+            int state = (int) empiricalDistribution.rand();
+            sequences[i][0] = (int) emission[state].rand();
+            labels[i][0] = state;
+            for(int j = 1; j < sequences[i].length; j++) {
+                state = (int) transition[state].rand();
+                sequences[i][j] = (int) emission[state].rand();
+                labels[i][j] = state;
+            }
+        }
+        HMM model = HMM.fit(sequences, labels);
+        Main.printer.printConsole(String.format("Model: %s", model));
 
+        int[] prediction = model.predict(new int[] { 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0 });
+        Utilities.printVector(prediction);
     }
 
     private static void dynamicMemoryTest() {

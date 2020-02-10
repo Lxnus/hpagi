@@ -8,9 +8,21 @@ public class Utilities {
         Utilities.printer.printConsoleSL("Vector: [");
         for(int i = 0; i < vector.length; i++) {
             if(i < vector.length - 1) {
-                System.out.print(vector[i] + ", ");
+                System.out.print(String.format("%s, ", vector[i]));
             } else {
-                System.out.print(vector[i] + "]");
+                System.out.print(String.format("%s]", vector[i]));
+            }
+        }
+        System.out.println();
+    }
+
+    public static void printVector(int[] vector) {
+        Utilities.printer.printConsoleSL("Vector: [");
+        for(int i = 0; i < vector.length; i++) {
+            if(i < vector.length - 1) {
+                System.out.print(String.format("%s, ", vector[i]));
+            } else {
+                System.out.print(String.format("%s]", vector[i]));
             }
         }
         System.out.println();
