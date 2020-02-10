@@ -21,10 +21,7 @@ import gnu.prolog.term.AtomTerm;
 import gnu.prolog.vm.Environment;
 import gnu.prolog.vm.Interpreter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -45,6 +42,8 @@ public class Main {
         algorithmTest();
         prologTest();
         dynamicMemoryTest();
+        testMarkovChain();
+        testHiddenMarkovModel();
         cognitiveMultithreadingTest();
         environmentTest();
     }
@@ -76,6 +75,21 @@ public class Main {
         cognitiveAlgorithm.generateBayesianNetwork(new String[] {"True", "False"}, new String[] {"A", "B", "C", "D"}, data);
         cognitiveAlgorithm.print();
         cognitiveAlgorithm.cognitivePrediction(X);
+    }
+
+    private static void testMarkovChain() {
+        Algorithms algorithms = new Algorithms();
+        double[][] transition = new double[][] {
+                { 0.8, 0.2, 0.1 },
+                { 0.1, 0.2, 0.8 },
+                { 0,9, 0.4, 0.6 }
+        };
+        LinkedList<Double> markovChain = algorithms.markovChain(transition);
+        Main.printer.printConsole(String.format("Markov-Chain: %s", markovChain.toString()));
+    }
+
+    private static void testHiddenMarkovModel() {
+
     }
 
     private static void dynamicMemoryTest() {
