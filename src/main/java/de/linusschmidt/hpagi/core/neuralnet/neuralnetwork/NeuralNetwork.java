@@ -157,4 +157,8 @@ public class NeuralNetwork {
 		}
 		return this;
 	}
+
+	public List<InputNeuron> getInputNeurons() {
+		return inputNeurons;
+	}
 }

@@ -21,19 +21,19 @@ public class MCTSNode {
         this.children = new ArrayList<>();
     }
 
-    private MCTSNode select() {
+    private MCTSNode select(IEnvironment environment) {
         MCTSNode best = null;
         double bestValue = Double.MIN_VALUE;
         for(MCTSNode child : this.children) {
             double buffer = child.w / child.v + child.c * Math.sqrt(Math.log(this.v + 1) / child.v);
             double epsilon = 1e-6;
-            double uct = Double.isNaN(buffer) ? Math.random() * epsilon : buffer;
+            double uct = Double.isNaN(buffer) ? Math.random() * epsilon : buffer * environment.requestReward(child.s);
             if(uct > bestValue) {
                 bestValue = uct;
                 best = child;
             }
         }
-        if(best == null) {
+        if(best == null || Double.isNaN(bestValue)) {
             best = this.children.get((int) (Math.random() * this.children.size()));
         }
         return best;
@@ -63,7 +63,7 @@ public class MCTSNode {
         MCTSNode current = this;
         boolean isFinish = environment.isFinish();
         while(!current.isLeaf() && !isFinish) {
-            current = current.select();
+            current = current.select(environment);
             visited.add(current);
             environment.apply(current.s);
             isFinish = environment.isFinish();
@@ -79,11 +79,30 @@ public class MCTSNode {
         return environment.getReward();
     }
 
+    public LinkedList<double[]> trainingData(IEnvironment environment) {
+        LinkedList<double[]> trainingData = new LinkedList<>();
+        MCTSNode current = this;
+        boolean isFinish = environment.isFinish();
+        while(!current.isLeaf() && !isFinish) {
+            current = current.select(environment);
+            environment.apply(current.s);
+            isFinish = environment.isFinish();
+            double[] data = new double[environment.possibleActions().length];
+            for(int i = 0; i < data.length; i++) {
+                if(i == current.s) {
+                    data[i] = 1.0D;
+                }
+            }
+            trainingData.add(data);
+        }
+        return trainingData;
+    }
+
     private MCTSNode selection(IEnvironment environment) {
         MCTSNode current = this;
         boolean isFinish = environment.isFinish();
         while(!current.isLeaf() && !isFinish) {
-            current = current.select();
+            current = current.select(environment);
             environment.apply(current.s);
             isFinish = environment.isFinish();
         }
@@ -92,5 +111,17 @@ public class MCTSNode {
 
     private void addNode(MCTSNode node) {
         this.children.add(node);
+    }
+
+    public List<MCTSNode> getChildren() {
+        return children;
+    }
+
+    public double getV() {
+        return v;
+    }
+
+    public double getW() {
+        return w;
     }
 }
