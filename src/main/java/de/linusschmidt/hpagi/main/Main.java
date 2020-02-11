@@ -46,8 +46,8 @@ public class Main {
         algorithmTest();
         prologTest();
         dynamicMemoryTest();
-        testMarkovChain();
-        testHiddenMarkovModel();
+        markovChainTest();
+        hiddenMarkovModelTest();
         cognitiveMultithreadingTest();
         environmentTest();
     }
@@ -81,7 +81,7 @@ public class Main {
         cognitiveAlgorithm.cognitivePrediction(X);
     }
 
-    private static void testMarkovChain() {
+    private static void markovChainTest() {
         Algorithms algorithms = new Algorithms();
         double[][] transition = new double[][] {
                 { 0.8, 0.2, 0.1 },
@@ -92,16 +92,16 @@ public class Main {
         Main.printer.printConsole(String.format("Markov-Chain: %s", markovChain.toString()));
     }
 
-    private static void testHiddenMarkovModel() {
+    private static void hiddenMarkovModelTest() {
         double[][] a = new double[][] {
-                {0.8, 0.2},
-                {0.2, 0.8}
+                {0.0, 1.0},
+                {1.0, 0.0}
         };
         double[][] b = new double[][] {
-                {0.1, 0.9},
-                {0.9, 0.1}
+                {0.6, 0.4},
+                {0.4, 0.6}
         };
-        EmpiricalDistribution empiricalDistribution = new EmpiricalDistribution(new double[] {0.2, 0.8});
+        EmpiricalDistribution empiricalDistribution = new EmpiricalDistribution(new double[] {0.5, 0.5});
         EmpiricalDistribution[] transition = new EmpiricalDistribution[a.length];
         for(int i = 0; i < transition.length; i++) {
             transition[i] = new EmpiricalDistribution(a[i]);
@@ -110,10 +110,10 @@ public class Main {
         for(int i = 0; i < b.length; i++) {
             emission[i] = new EmpiricalDistribution(b[i]);
         }
-        int[][] sequences = new int[1000][];
-        int[][] labels = new int[1000][];
+        int[][] sequences = new int[10][];
+        int[][] labels = new int[10][];
         for(int i = 0; i < sequences.length; i++) {
-            sequences[i] = new int[30 * (MathEx.randomInt(5) + 1)];
+            sequences[i] = new int[(MathEx.randomInt(5) + 1)];
             labels[i] = new int[sequences[i].length];
             int state = (int) empiricalDistribution.rand();
             sequences[i][0] = (int) emission[state].rand();
@@ -123,11 +123,15 @@ public class Main {
                 sequences[i][j] = (int) emission[state].rand();
                 labels[i][j] = state;
             }
+            Utilities.printVector(sequences[i]);
+            Utilities.printVector(labels[i]);
+            System.out.println();
         }
         HMM model = HMM.fit(sequences, labels);
-        Main.printer.printConsole(String.format("Model: %s", model));
+        Main.printer.printConsole("Model:");
+        System.out.println(model);
 
-        int[] prediction = model.predict(new int[] { 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0 });
+        int[] prediction = model.predict(new int[] { 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1 });
         Utilities.printVector(prediction);
     }
 

@@ -2,6 +2,7 @@ package de.linusschmidt.hpagi.network;
 
 import de.linusschmidt.hpagi.utilities.MathUtilities;
 import de.linusschmidt.hpagi.utilities.Printer;
+import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class Hopfield {
                 break;
             }
         } while (distance > minDistance);
+        Utilities.printVector(recreation);
     }
 
     public void train() {
