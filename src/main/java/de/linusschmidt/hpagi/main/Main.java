@@ -41,15 +41,40 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         translationTest();
+        Main.printer.printConsole("*************************************************");
         bayesianStructureTest();
+        Main.printer.printConsole("*************************************************");
         bayesianParameterTest();
+        Main.printer.printConsole("*************************************************");
         algorithmTest();
+        Main.printer.printConsole("*************************************************");
         prologTest();
+        Main.printer.printConsole("*************************************************");
         dynamicMemoryTest();
+        Main.printer.printConsole("*************************************************");
         markovChainTest();
+        Main.printer.printConsole("*************************************************");
+        markovModelTest();
+        Main.printer.printConsole("*************************************************");
         hiddenMarkovModelTest();
+        Main.printer.printConsole("*************************************************");
         cognitiveMultithreadingTest();
+        Main.printer.printConsole("*************************************************");
         environmentTest();
+    }
+
+    private static void markovModelTest() {
+        /**
+         * Erstellung eines Markov Models 3x3
+         */
+        double[][] transition = new double[][] {
+                { 0.4, 0.3, 0.3 },
+                { 0.8, 0.1, 0.1 },
+                { 0.2, 0.5, 0.3 }
+        };
+        Algorithms algorithms = new Algorithms();
+        LinkedList<Double> markovChain = algorithms.markovChain(transition);
+        Main.printer.printConsole(String.format("Markov-Chain: %s", markovChain.toString()));
     }
 
     private static void cognitiveMultithreadingTest() throws InterruptedException, InconsistentEvidenceException {
