@@ -84,9 +84,8 @@ public class Main {
     private static void markovChainTest() {
         Algorithms algorithms = new Algorithms();
         double[][] transition = new double[][] {
-                { 0.8, 0.2, 0.1 },
-                { 0.1, 0.2, 0.8 },
-                { 0,9, 0.4, 0.6 }
+                { 0.5, 0.5 },
+                { 0.5, 0.5 },
         };
         LinkedList<Double> markovChain = algorithms.markovChain(transition);
         Main.printer.printConsole(String.format("Markov-Chain: %s", markovChain.toString()));
