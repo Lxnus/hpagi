@@ -40,9 +40,11 @@ public class BayesianNetworkBuilder {
     }
 
     public void generateBayesianNetwork() {
+        this.printer.printConsole("Generating bayesian network...");
         this.build();
         this.network.validate(new ValidationOptions());
         this.printNetwork();
+        this.printer.printConsole("done. - Generate bayesian network!");
     }
 
     public void predict(double[] binaryInputs, int idx) throws InconsistentEvidenceException {
@@ -69,7 +71,6 @@ public class BayesianNetworkBuilder {
 
         for(Table table : tables) {
             State[] states = new State[table.getSortedVariables().size()];
-            this.printer.printConsole(String.format("Size: %s", states.length));
             for(int i = 0; i < table.getSortedVariables().size(); i++) {
                 Variable variable = table.getSortedVariables().get(i).getVariable();
                 String strState = Math.round(binaryInputs[this.translator.get(variable.getName())]) == 0 ? "False" : "True";
@@ -109,6 +110,7 @@ public class BayesianNetworkBuilder {
     }
 
     private void build() {
+        this.printer.printConsole("Build network...");
         DataTable dataTable = this.generateDataTable(this.data);
         DataTableDataReaderCommand dataReaderCommand = new DataTableDataReaderCommand(dataTable);
         this.generateNetworkNodes();
@@ -121,6 +123,7 @@ public class BayesianNetworkBuilder {
 
         this.createNetworkStructure(evidenceReaderCommand);
         this.createDistributions(evidenceReaderCommand);
+        this.printer.printConsole("done. - Build network!");
     }
 
     private void generateNetworkNodes() {
@@ -139,21 +142,24 @@ public class BayesianNetworkBuilder {
             System.out.println(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
         }
         */
-
+        this.printer.printConsole("Create network structure...");
         ChowLiuStructuralLearning chowLiuStructuralLearning = new ChowLiuStructuralLearning();
         ChowLiuStructuralLearningOptions chowLiuStructuralLearningOptions = new ChowLiuStructuralLearningOptions();
         ChowLiuStructuralLearningOutput chowLiuStructuralLearningOutput = (ChowLiuStructuralLearningOutput) chowLiuStructuralLearning.learn(evidenceReaderCommand, this.network.getNodes(), chowLiuStructuralLearningOptions);
         for(LinkOutput linkOutput : chowLiuStructuralLearningOutput.getLinkOutputs()) {
             this.printer.printConsole(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
         }
+        this.printer.printConsole("done. - Create network structure!");
     }
 
     private void createDistributions(EvidenceReaderCommand evidenceReaderCommand) {
+        this.printer.printConsole("Create distributions...");
         ParameterLearning parameterLearning = new ParameterLearning(this.network, new RelevanceTreeInferenceFactory());
         ParameterLearningOptions parameterLearningOptions = new ParameterLearningOptions();
         parameterLearningOptions.setDecisionPostProcessing(DecisionPostProcessingMethod.PROBABILITIES);
         parameterLearningOptions.setConvergenceMethod(ConvergenceMethod.PARAMETERS);
         parameterLearning.learn(evidenceReaderCommand, parameterLearningOptions);
+        this.printer.printConsole("done. - Create distributions!");
     }
 
     private EvidenceReaderCommand generateEvidence(DataTableDataReaderCommand dataReaderCommand, List<VariableReference> variableReferences) {
@@ -161,6 +167,7 @@ public class BayesianNetworkBuilder {
     }
 
     private DataTable generateDataTable(List<double[]> data) {
+        this.printer.printConsole("Generate data table...");
         DataTable dataTable = new DataTable();
         DataColumnCollection dataColumns = dataTable.getColumns();
         for(String dataDescription : this.dataDescriptions) {
@@ -171,6 +178,7 @@ public class BayesianNetworkBuilder {
             String[] processedNodeData = this.processedNodeData(vector);
             dataRows.add(processedNodeData);
         }
+        this.printer.printConsole("done. - Generating data table!");
         return dataTable;
     }
 

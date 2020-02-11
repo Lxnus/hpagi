@@ -42,15 +42,25 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         bayesianTest();
+        Main.printer.printConsole("**********************************************");
         cognitiveMultithreadingTest();
+        Main.printer.printConsole("**********************************************");
         markovChainTest();
+        Main.printer.printConsole("**********************************************");
         hiddenMarkovModelTest();
+        Main.printer.printConsole("**********************************************");
         dynamicMemoryTest();
+        Main.printer.printConsole("**********************************************");
         environmentTest();
+        Main.printer.printConsole("**********************************************");
         prologTest();
+        Main.printer.printConsole("**********************************************");
         algorithmTest();
+        Main.printer.printConsole("**********************************************");
         bayesianStructureTest();
+        Main.printer.printConsole("**********************************************");
         bayesianParameterTest();
+        Main.printer.printConsole("**********************************************");
         translationTest();
     }
 
@@ -127,9 +137,6 @@ public class Main {
                 sequences[i][j] = (int) emission[state].rand();
                 labels[i][j] = state;
             }
-            Utilities.printVector(sequences[i]);
-            Utilities.printVector(labels[i]);
-            System.out.println();
         }
         HMM model = HMM.fit(sequences, labels);
         Main.printer.printConsole("Model:");

@@ -28,7 +28,6 @@ public class Translator {
     }
 
     public synchronized void add(String key) {
-        this.printer.printConsole(String.format("CurrentTimeMillis: %s", System.currentTimeMillis()));
         Integer reference = this.translation.get(key);
         if(reference == null) {
             this.translation.put(key, this.idx.getAndIncrement());

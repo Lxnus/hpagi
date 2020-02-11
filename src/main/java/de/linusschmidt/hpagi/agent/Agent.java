@@ -37,7 +37,6 @@ public class Agent {
         TreeView treeView = new TreeView(this.coreEngine.getMctsRootNode());
         treeView.showTree("Test");
 
-        this.printer.printConsole("Build bayesian network...");
         this.bayesianNetworkBuilder.setData(new String[] {"True", "False"}, new String[] {"A", "B", "C", "D"}, trainingData);
         this.bayesianNetworkBuilder.generateBayesianNetwork();
 
@@ -56,6 +55,7 @@ public class Agent {
                 this.neuralNetwork.train(0.9D, trainingData.get(j), 1);
             }
         }
+        this.printer.printConsole("done. - Building neural network!");
         this.neuralNetwork.printOutputs();
     }
 }
