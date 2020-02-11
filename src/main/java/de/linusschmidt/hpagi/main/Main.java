@@ -186,6 +186,7 @@ public class Main {
     }
 
     private static void environmentTest() {
+        Main.printer.printConsole("****** Environment ******");
         Agent agent = new Agent();
         IEnvironment environment = new de.linusschmidt.hpagi.environment.Environment();
         agent.setEnvironment(environment);
