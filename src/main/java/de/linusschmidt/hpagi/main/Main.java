@@ -64,7 +64,8 @@ public class Main {
         translationTest();
     }
 
-    private static void bayesianTest() {
+    private static void bayesianTest() throws InconsistentEvidenceException {
+        Main.printer.printConsole("******Bayesian test******");
         String[] nodeDescription = new String[] {"True", "False"};
         String[] dataDescription = new String[] {"A", "B", "C"};
         LinkedList<double[]> data = new LinkedList<>();
@@ -72,10 +73,13 @@ public class Main {
         data.add(new double[] {1, 1, 1});
         data.add(new double[] {0, 0, 1});
         data.add(new double[] {1, 0, 1});
+        data.add(new double[] {0, 1, 1});
+        data.add(new double[] {0, 1, 1});
 
         BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder();
         bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
         bayesianNetworkBuilder.generateBayesianNetwork();
+        bayesianNetworkBuilder.predict(new double[] {0, 1, 0}, 0);
     }
     private static void cognitiveMultithreadingTest() throws InterruptedException, InconsistentEvidenceException {
         List<double[]> data = new ArrayList<>();

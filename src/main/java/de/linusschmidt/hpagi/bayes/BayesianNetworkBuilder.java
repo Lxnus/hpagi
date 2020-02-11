@@ -59,6 +59,41 @@ public class BayesianNetworkBuilder {
         for(int i = 0; i < binaryInputs.length; i++) {
             if(binaryInputs[i] == 1 && i != idx) {
                 Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[i]);
+                State state = variable.getStates().get(this.processedNodeData(binaryInputs)[idx]);
+                inference.getEvidence().setState(state);
+            }
+            Node node = inference.getNetwork().getNodes().get(this.dataDescriptions[i]);
+            Table table = new Table(node.getDistribution().getTable());
+            inference.getQueryDistributions().add(table);
+            tables.add(table);
+        }
+        double b = idx;
+
+        inference.query(queryOptions, queryOutput);
+
+        Table table = tables.get(idx);
+        State[] states = new State[table.getSortedVariables().size()];
+        for (int i = 0; i < table.getSortedVariables().size(); i++) {
+            Variable variable = table.getSortedVariables().get(i).getVariable();
+            String strState = Math.round(binaryInputs[this.translator.get(variable.getName())]) == 0 ? "False" : "True";
+            State state = variable.getStates().get(strState);
+            states[i] = state;
+        }
+        double prediction = table.get(states);
+        this.printer.printConsole(String.format("Prediction: %s", prediction));
+
+        /*
+        InferenceFactory inferenceFactory = new RelevanceTreeInferenceFactory();
+        Inference inference = inferenceFactory.createInferenceEngine(this.network);
+        QueryOutput queryOutput = inferenceFactory.createQueryOutput();
+        QueryOptions queryOptions = inferenceFactory.createQueryOptions();
+
+        queryOptions.setDecisionAlgorithm(DecisionAlgorithm.SINGLE_POLICY_UPDATING);
+
+        LinkedList<Table> tables = new LinkedList<>();
+        for(int i = 0; i < binaryInputs.length; i++) {
+            if(binaryInputs[i] == 1 && i != idx) {
+                Variable variable = inference.getNetwork().getVariables().get(this.dataDescriptions[i]);
                 State state = variable.getStates().get(this.processedNodeData(binaryInputs)[i]);
                 inference.getEvidence().setState(state);
             }
@@ -69,18 +104,21 @@ public class BayesianNetworkBuilder {
         }
         inference.query(queryOptions, queryOutput);
 
+        int index = 0;
         for(Table table : tables) {
-            State[] states = new State[table.getSortedVariables().size()];
-            for(int i = 0; i < table.getSortedVariables().size(); i++) {
-                Variable variable = table.getSortedVariables().get(i).getVariable();
-                String strState = Math.round(binaryInputs[this.translator.get(variable.getName())]) == 0 ? "False" : "True";
-                State state = variable.getStates().get(strState);
-                states[i] = state;
+            if(idx == index) {
+                State[] states = new State[table.getSortedVariables().size()];
+                for (int i = 0; i < table.getSortedVariables().size(); i++) {
+                    Variable variable = table.getSortedVariables().get(i).getVariable();
+                    String strState = Math.round(binaryInputs[this.translator.get(variable.getName())]) == 0 ? "False" : "True";
+                    State state = variable.getStates().get(strState);
+                    states[i] = state;
+                }
+                double prediction = table.get(states);
+                this.printer.printConsole(String.format("Prediction: %s", prediction));
             }
-            double prediction = table.get(states);
-            this.printer.printConsole(String.format("Prediction: %s", prediction));
+            index++;
         }
-        /*
         int index = 0;
         double result = 0.0D;
         double[] output = new double[this.dataDescriptions.length];
