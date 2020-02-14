@@ -4,19 +4,16 @@ import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.core.CoreEngine;
 import de.linusschmidt.hpagi.draw.TreeView;
 import de.linusschmidt.hpagi.environment.IEnvironment;
-import de.linusschmidt.hpagi.utilities.Printer;
 import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.List;
 
 public class Agent {
 
-    private Printer printer;
     private CoreEngine coreEngine;
     private BayesianNetworkBuilder bayesianNetworkBuilder;
 
     public Agent() {
-        this.printer = new Printer();
         this.bayesianNetworkBuilder = new BayesianNetworkBuilder();
     }
 
