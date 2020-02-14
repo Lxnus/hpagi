@@ -75,6 +75,7 @@ public class Main {
         data.add(new double[] {1, 0, 1});
         data.add(new double[] {0, 1, 1});
         data.add(new double[] {0, 1, 1});
+        data.add(new double[] {1, 1, 0});
 
         BayesianNetworkBuilder bayesianNetworkBuilder = new BayesianNetworkBuilder();
         bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
