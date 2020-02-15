@@ -67,7 +67,6 @@ public class BayesianNetworkBuilder {
             inference.getQueryDistributions().add(table);
             tables.add(table);
         }
-        double b = idx;
 
         inference.query(queryOptions, queryOutput);
 
