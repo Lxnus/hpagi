@@ -2,6 +2,10 @@ package de.linusschmidt.hpagi.utilities;
 
 import java.util.Arrays;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class MathUtilities {
 
     private static Printer printer = new Printer();

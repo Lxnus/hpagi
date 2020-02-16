@@ -5,6 +5,10 @@ import de.linusschmidt.hpagi.utilities.Printer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Translator {
 
     private AtomicInteger idx;

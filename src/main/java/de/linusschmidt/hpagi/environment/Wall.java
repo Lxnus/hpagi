@@ -1,5 +1,9 @@
 package de.linusschmidt.hpagi.environment;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Wall {
 
     private int x;

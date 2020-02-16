@@ -7,12 +7,7 @@ import java.util.Calendar;
 
 /**
  * @author Linus Schmidt
- *
- * "Printer" Klasse.
- * Verwendung:
- *      - Mit dieser Klasse lasse ich alle Sequenzen in einem einheitlichen Format ausgeben.
- *        In diesem Fall wird folgenes Format verwendet:
- *        ==> [<Time>][<Project>]: <Message>
+ * All rights reserved!
  */
 public class Printer {
 

@@ -3,6 +3,10 @@ package de.linusschmidt.hpagi.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Graph {
 
     public static class Node {

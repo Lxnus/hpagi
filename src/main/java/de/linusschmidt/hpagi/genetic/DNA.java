@@ -1,5 +1,9 @@
 package de.linusschmidt.hpagi.genetic;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class DNA {
 
     private double[] dna;

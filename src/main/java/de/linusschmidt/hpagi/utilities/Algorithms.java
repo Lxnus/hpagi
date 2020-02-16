@@ -2,6 +2,10 @@ package de.linusschmidt.hpagi.utilities;
 
 import java.util.*;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Algorithms {
 
     public Graph.Node bfs(Graph graph, double s) {

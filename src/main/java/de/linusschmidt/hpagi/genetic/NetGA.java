@@ -2,6 +2,10 @@ package de.linusschmidt.hpagi.genetic;
 
 import de.linusschmidt.hpagi.utilities.MathUtilities;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class NetGA {
 
     private int inputs;

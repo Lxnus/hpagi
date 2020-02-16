@@ -7,6 +7,10 @@ import de.linusschmidt.hpagi.utilities.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Hopfield {
 
     private int neurons;

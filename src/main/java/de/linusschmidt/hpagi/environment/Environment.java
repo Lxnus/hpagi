@@ -5,6 +5,10 @@ import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.awt.*;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Environment implements IEnvironment {
 
     private int startX;

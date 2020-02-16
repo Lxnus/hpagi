@@ -1,5 +1,9 @@
 package de.linusschmidt.hpagi.utilities;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Utilities {
 
     private static Printer printer = new Printer();
