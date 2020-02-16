@@ -2,7 +2,6 @@ package de.linusschmidt.hpagi.agent;
 
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.core.CoreEngine;
-import de.linusschmidt.hpagi.draw.TreeView;
 import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.utilities.Utilities;
 
@@ -31,8 +30,6 @@ public class Agent {
         for(double[] data : trainingData) {
             Utilities.printVector(data);
         }
-        TreeView treeView = new TreeView(this.coreEngine.getMctsRootNode());
-        treeView.showTree("Test");
 
         this.bayesianNetworkBuilder.setData(new String[] {"True", "False"}, new String[] {"A", "B", "C", "D"}, trainingData);
         this.bayesianNetworkBuilder.generateBayesianNetwork();

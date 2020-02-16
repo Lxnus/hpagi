@@ -50,7 +50,7 @@ public class Hopfield {
         return output;
     }
 
-    public void recreateTo(double minDistance, double[] input, boolean debug) {
+    public double[] recreateTo(double minDistance, double[] input, boolean debug) {
         int iteration = 0;
         double distance;
         double[] recreation = input;
@@ -66,6 +66,7 @@ public class Hopfield {
             }
         } while (distance > minDistance);
         Utilities.printVector(recreation);
+        return recreation;
     }
 
     public void train() {

@@ -207,18 +207,4 @@ public class MathUtilities {
         }
         MathUtilities.printer.printConsole(String.format("Steps: %s", steps));
     }
-
-    /**
-     * Das ist die Dunkle unsichtbare methode. Der Algorithmus versucht aus der History die nächste Bewegung zu
-     * erschließen.
-     */
-
-    public static double dCbr1D(double[] H, double x) {
-        double sum = 0.0D;
-        for(int i = 0; i < H.length - 1; i++) {
-            sum += H[i + 1] - H[i];
-        }
-        double b = sum / (H.length - 1);
-        return x + b;
-    }
 }
