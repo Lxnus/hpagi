@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class MCTSNode {
 
     private double s;

@@ -8,6 +8,10 @@ import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.List;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Agent {
 
     private CoreEngine coreEngine;

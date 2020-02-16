@@ -4,6 +4,10 @@ import de.linusschmidt.hpagi.core.tree.MCTSNode;
 import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.utilities.Printer;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class CoreEngine {
 
     private Printer printer;

@@ -1,2 +1,0 @@
-sky(blue).
-tree(green).

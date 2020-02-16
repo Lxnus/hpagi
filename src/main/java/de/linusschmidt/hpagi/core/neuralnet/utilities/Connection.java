@@ -2,12 +2,11 @@ package de.linusschmidt.hpagi.core.neuralnet.utilities;
 
 import de.linusschmidt.hpagi.core.neuralnet.neurons.INeuron;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class Connection {
-
-    /**
-     * Author: Linus Schmidt!
-     * All rights reserved!
-     */
 
 	private double weight;
 

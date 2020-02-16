@@ -7,12 +7,11 @@ import de.linusschmidt.hpagi.utilities.MathUtilities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class OutputNeuron implements INeuron {
-
-    /**
-     * Author: Linus Schmidt!
-     * All rights reserved!
-     */
 
     private double biasValue = 0.0D;
     private double neuronValue = 0.0D;

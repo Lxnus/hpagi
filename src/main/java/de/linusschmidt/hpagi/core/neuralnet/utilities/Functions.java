@@ -1,11 +1,10 @@
 package de.linusschmidt.hpagi.core.neuralnet.utilities;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public enum Functions {
 
-    /**
-     * Author: Linus Schmidt!
-     * All rights reserved!
-     */
-	
     SIGMOID, IDENTITY, TANH
 }

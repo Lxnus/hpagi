@@ -2,12 +2,11 @@ package de.linusschmidt.hpagi.core.neuralnet.neurons;
 
 import de.linusschmidt.hpagi.core.neuralnet.utilities.Connection;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class InputNeuron implements INeuron {
-
-    /**
-     * Author: Linus Schmidt!
-     * All rights reserved!
-     */
 
 	private double neuronValue = 0.0D;
 	

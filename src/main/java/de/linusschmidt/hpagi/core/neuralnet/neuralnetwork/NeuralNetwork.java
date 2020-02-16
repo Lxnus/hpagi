@@ -10,6 +10,10 @@ import de.linusschmidt.hpagi.utilities.Printer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Linus Schmidt
+ * All rights reserved!
+ */
 public class NeuralNetwork {
 
 	public Printer printer;
