@@ -3,6 +3,7 @@ package de.linusschmidt.hpagi.agent;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.core.CoreEngine;
 import de.linusschmidt.hpagi.environment.IEnvironment;
+import de.linusschmidt.hpagi.utilities.Printer;
 import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.List;
@@ -13,10 +14,12 @@ import java.util.List;
  */
 public class Agent {
 
+    private Printer printer;
     private CoreEngine coreEngine;
     private BayesianNetworkBuilder bayesianNetworkBuilder;
 
     public Agent() {
+        this.printer = new Printer();
         this.bayesianNetworkBuilder = new BayesianNetworkBuilder();
     }
 
@@ -25,7 +28,11 @@ public class Agent {
     }
 
     public void run() {
-        this.coreEngine.solve();
+        long start = System.currentTimeMillis();
+        double avgReward = this.coreEngine.solve();
+        long end = System.currentTimeMillis();
+        this.printer.printConsole(String.format("Duration: %s", (end - start) / 1000));
+        this.printer.printConsole(String.format("MCTS: Avg.-Reward: %s", avgReward));
         List<double[]> trainingData = this.coreEngine.getMctsRootNode().trainingData(this.coreEngine.getEnvironment());
         for(double[] data : trainingData) {
             Utilities.printVector(data);

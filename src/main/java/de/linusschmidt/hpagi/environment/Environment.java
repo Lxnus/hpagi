@@ -73,9 +73,9 @@ public class Environment implements IEnvironment {
     public double getReward() {
         double reward = 1 / MathUtilities.distance(this.npc.getX(), this.targetNPC.getX(), this.npc.getY(), this.targetNPC.getY());
         if(this.npc.getX() == this.targetNPC.getX() && this.npc.getY() == this.targetNPC.getY()) {
-            return 1 + reward;
+            return 1;
         }
-        return -1 + reward;
+        return 0;
     }
 
     @Override
