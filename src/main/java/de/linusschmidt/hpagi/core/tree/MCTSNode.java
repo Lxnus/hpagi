@@ -1,6 +1,7 @@
 package de.linusschmidt.hpagi.core.tree;
 
 import de.linusschmidt.hpagi.environment.IEnvironment;
+import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12,12 +13,16 @@ import java.util.List;
  */
 public class MCTSNode {
 
-    private double s;
+    private double s = -1;
     private double w = 0.0D;
-    private double v = 0.0D;
+    private double v = 1.0D;
     private double c = Math.sqrt(2);
 
     private List<MCTSNode> children;
+
+    public MCTSNode() {
+        this.children = new ArrayList<>();
+    }
 
     public MCTSNode(double s) {
         this.s = s;
@@ -25,20 +30,29 @@ public class MCTSNode {
         this.children = new ArrayList<>();
     }
 
-    private MCTSNode select(IEnvironment environment) {
+    public void expand(LinkedList<Double> data) {
+        if(data.size() > 0) {
+            MCTSNode child = new MCTSNode();
+            child.s = data.getFirst();
+            child.w = 1;
+            child.v = 1;
+            data.removeFirst();
+            System.out.println(data.size());
+            this.addNode(child);
+            child.expand(data);
+        }
+    }
+
+    private MCTSNode select() {
         MCTSNode best = null;
-        double bestValue = Double.MIN_VALUE;
+        double bestValue = Double.NEGATIVE_INFINITY;
         for(MCTSNode child : this.children) {
-            double buffer = child.w / child.v + child.c * Math.sqrt(Math.log(this.v + 1) / child.v);
-            double epsilon = 1e-6;
-            double uct = Double.isNaN(buffer) ? Math.random() * epsilon : buffer * environment.requestReward(child.s);
+            assert child.v > 0;
+            double uct = (child.v == 0 ? 0 : child.w / child.v + this.c * Math.sqrt(Math.log(this.v + 1) / child.v));
             if(uct > bestValue) {
                 bestValue = uct;
                 best = child;
             }
-        }
-        if(best == null || Double.isNaN(bestValue)) {
-            best = this.children.get((int) (Math.random() * this.children.size()));
         }
         return best;
     }
@@ -59,7 +73,7 @@ public class MCTSNode {
 
     private void update(double reward) {
         this.w += reward;
-        this.v += 1;
+        ++this.v;
     }
 
     public double rollOut(IEnvironment environment) {
@@ -67,19 +81,20 @@ public class MCTSNode {
         MCTSNode current = this;
         boolean isFinish = environment.isFinish();
         while(!current.isLeaf() && !isFinish) {
-            current = current.select(environment);
+            current = current.select();
             visited.add(current);
             environment.apply(current.s);
             isFinish = environment.isFinish();
         }
         if(!isFinish) {
             current.expand(environment);
-            current = this.selection(environment);
+            current = current.select(); //this.selection(environment);
             environment.apply(current.s);
         }
         for(MCTSNode node : visited) {
             node.update(environment.getReward());
         }
+        System.out.println(environment.getReward());
         return environment.getReward();
     }
 
@@ -88,12 +103,12 @@ public class MCTSNode {
         MCTSNode current = this;
         boolean isFinish = environment.isFinish();
         while(!current.isLeaf() && !isFinish) {
-            current = current.select(environment);
+            current = current.select();
             environment.apply(current.s);
             isFinish = environment.isFinish();
             double[] data = new double[environment.possibleActions().length];
-            for(int i = 0; i < data.length; i++) {
-                if(i == current.s) {
+            for (int i = 0; i < data.length; i++) {
+                if (i == current.s) {
                     data[i] = 1.0D;
                 }
             }
@@ -106,11 +121,19 @@ public class MCTSNode {
         MCTSNode current = this;
         boolean isFinish = environment.isFinish();
         while(!current.isLeaf() && !isFinish) {
-            current = current.select(environment);
+            current = current.select();
             environment.apply(current.s);
             isFinish = environment.isFinish();
         }
         return current;
+    }
+
+    public int getNodes() {
+        int nodes = this.children.size();
+        for(MCTSNode mctsNode : this.children) {
+            nodes += mctsNode.getNodes();
+        }
+        return nodes;
     }
 
     private void addNode(MCTSNode node) {
@@ -127,5 +150,9 @@ public class MCTSNode {
 
     public double getW() {
         return w;
+    }
+
+    public double getS() {
+        return s;
     }
 }
