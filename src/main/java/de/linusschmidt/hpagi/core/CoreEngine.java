@@ -78,12 +78,9 @@ public class CoreEngine {
 
     public void testMCTS() {
         this.printer.printConsole("Testing monte carlo...");
-        double[][] data = new double[100][];
-        for(int i = 0; i < 100; i++) {
-            this.printer.printConsole("****");
-            long start = System.currentTimeMillis();
+        double[][] data = new double[20][];
+        for(int i = 0; i < data.length; i++) {
             LinkedList<Double> list = this.solve(0.95);
-            long end = System.currentTimeMillis();
             double[] vec = new double[2];
             double avg = 0.0D;
             for (Double aDouble : list) {
@@ -92,7 +89,6 @@ public class CoreEngine {
             vec[1] = avg / (double) list.size();
             vec[0] = i;
             data[i] = vec;
-            this.printer.printConsole(String.format("Time: %s", (end - start)));
         }
 
         PlotCanvas plotCanvas = LinePlot.plot(data, Line.Style.DOT_DASH, Color.RED);

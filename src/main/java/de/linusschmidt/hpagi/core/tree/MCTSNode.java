@@ -1,7 +1,6 @@
 package de.linusschmidt.hpagi.core.tree;
 
 import de.linusschmidt.hpagi.environment.IEnvironment;
-import de.linusschmidt.hpagi.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -20,6 +19,8 @@ public class MCTSNode {
 
     private List<MCTSNode> children;
 
+    private LinkedList<MCTSNode> successWay;
+
     public MCTSNode() {
         this.children = new ArrayList<>();
     }
@@ -37,7 +38,6 @@ public class MCTSNode {
             child.w = 1;
             child.v = 1;
             data.removeFirst();
-            System.out.println(data.size());
             this.addNode(child);
             child.expand(data);
         }
@@ -77,7 +77,7 @@ public class MCTSNode {
     }
 
     public double rollOut(IEnvironment environment) {
-        List<MCTSNode> visited = new LinkedList<>();
+        LinkedList<MCTSNode> visited = new LinkedList<>();
         MCTSNode current = this;
         boolean isFinish = environment.isFinish();
         while(!current.isLeaf() && !isFinish) {
@@ -90,42 +90,30 @@ public class MCTSNode {
             current.expand(environment);
             current = current.select(); //this.selection(environment);
             environment.apply(current.s);
+            visited.add(current);
         }
         for(MCTSNode node : visited) {
             node.update(environment.getReward());
         }
-        System.out.println(environment.getReward());
+        this.successWay = environment.getReward() == 1 ? visited : null;
         return environment.getReward();
     }
 
     public LinkedList<double[]> trainingData(IEnvironment environment) {
-        LinkedList<double[]> trainingData = new LinkedList<>();
-        MCTSNode current = this;
-        boolean isFinish = environment.isFinish();
-        while(!current.isLeaf() && !isFinish) {
-            current = current.select();
-            environment.apply(current.s);
-            isFinish = environment.isFinish();
-            double[] data = new double[environment.possibleActions().length];
-            for (int i = 0; i < data.length; i++) {
-                if (i == current.s) {
-                    data[i] = 1.0D;
+        if(this.successWay != null) {
+            LinkedList<double[]> trainingData = new LinkedList<>();
+            for (MCTSNode current : this.successWay) {
+                double[] data = new double[environment.possibleActions().length];
+                for (int i = 0; i < data.length; i++) {
+                    if (i == current.s) {
+                        data[i] = 1.0D;
+                    }
                 }
+                trainingData.add(data);
             }
-            trainingData.add(data);
+            return trainingData;
         }
-        return trainingData;
-    }
-
-    private MCTSNode selection(IEnvironment environment) {
-        MCTSNode current = this;
-        boolean isFinish = environment.isFinish();
-        while(!current.isLeaf() && !isFinish) {
-            current = current.select();
-            environment.apply(current.s);
-            isFinish = environment.isFinish();
-        }
-        return current;
+        return null;
     }
 
     public int getNodes() {

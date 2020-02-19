@@ -1,6 +1,5 @@
 package de.linusschmidt.hpagi.environment;
 
-import de.linusschmidt.hpagi.utilities.MathUtilities;
 import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.awt.*;
@@ -21,7 +20,7 @@ public class Environment implements IEnvironment {
 
     public Environment() {
         this.printer = new Printer();
-        this.dimension = new Dimension(5, 5);
+        this.dimension = new Dimension(15, 15);
 
         this.buildNPC();
         this.buildTargetNPC();
@@ -71,13 +70,13 @@ public class Environment implements IEnvironment {
 
     @Override
     public double getReward() {
-        double reward = 1 / MathUtilities.distance(this.npc.getX(), this.targetNPC.getX(), this.npc.getY(), this.targetNPC.getY());
+        //double reward = 1 / MathUtilities.distance(this.npc.getX(), this.targetNPC.getX(), this.npc.getY(), this.targetNPC.getY());
         if(this.npc.getX() == this.targetNPC.getX() && this.npc.getY() == this.targetNPC.getY()) {
-            return 1;
+            return 1.0D;
         } else if(this.npc.getX() < 0 || this.npc.getX() > this.dimension.getWidth() || this.npc.getY() < 0 || this.npc.getY() > this.dimension.getHeight()) {
-            return 0;
+            return 0.0D;
         }
-        return 0.5;
+        return 0.0D;
     }
 
     @Override
@@ -89,8 +88,6 @@ public class Environment implements IEnvironment {
 
     @Override
     public void reset() {
-        //int x = (int) Math.round(Math.random() * this.dimension.getWidth());
-        //int y = (int) Math.round(Math.random() * this.dimension.getHeight());
         this.npc.setX(this.startX);
         this.npc.setY(this.startY);
     }
