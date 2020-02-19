@@ -52,6 +52,7 @@ public class CoreEngine {
         }
         int nodes = this.rootNode.getNodes();
         MCTSNode compressedTree = new MCTSNode();
+        compressedTree.setSuccessWay(this.rootNode.getSuccessWay());
         compressedTree.expand(processed);
         if(compressedTree.getNodes() < nodes) {
             this.printer.printConsole(String.format("Nodes-before: %s", this.rootNode.getNodes()));

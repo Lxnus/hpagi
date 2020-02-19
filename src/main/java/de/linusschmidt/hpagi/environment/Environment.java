@@ -1,6 +1,5 @@
 package de.linusschmidt.hpagi.environment;
 
-import de.linusschmidt.hpagi.utilities.MathUtilities;
 import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.awt.*;
@@ -15,17 +14,16 @@ public class Environment implements IEnvironment {
     private int startY;
 
     private Entity npc;
-    private Printer printer;
     private Entity targetNPC;
     private Dimension dimension;
 
     public Environment() {
-        this.printer = new Printer();
+        Printer printer = new Printer();
         this.dimension = new Dimension(5, 5);
 
         this.buildNPC();
         this.buildTargetNPC();
-        this.printer.printConsole(String.format("NPC: [%s][%s], TargetNPC: [%s][%s]", this.npc.getX(), this.npc.getY(), this.targetNPC.getX(), this.targetNPC.getY()));
+        printer.printConsole(String.format("NPC: [%s][%s], TargetNPC: [%s][%s]", this.npc.getX(), this.npc.getY(), this.targetNPC.getX(), this.targetNPC.getY()));
     }
 
     private void buildNPC() {

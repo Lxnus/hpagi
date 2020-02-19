@@ -128,15 +128,19 @@ public class MCTSNode {
         this.children.add(node);
     }
 
+    public double getState() {
+        return s;
+    }
+
     public List<MCTSNode> getChildren() {
         return children;
     }
 
-    public double getV() {
-        return v;
+    public LinkedList<MCTSNode> getSuccessWay() {
+        return successWay;
     }
 
-    public double getS() {
-        return s;
+    public void setSuccessWay(LinkedList<MCTSNode> successWay) {
+        this.successWay = successWay;
     }
 }
