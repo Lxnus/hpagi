@@ -1,10 +1,8 @@
 package de.linusschmidt.hpagi.core;
 
 import de.linusschmidt.hpagi.core.tree.MCTSNode;
-import de.linusschmidt.hpagi.draw.TreeView;
 import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.utilities.Printer;
-import de.linusschmidt.hpagi.utilities.Utilities;
 import smile.plot.*;
 
 import javax.swing.*;
@@ -20,34 +18,31 @@ public class CoreEngine {
     private boolean compressed = false;
 
     private Printer printer;
-    private MCTSNode mctsRootNode;
+    private MCTSNode rootNode;
     private IEnvironment environment;
 
     public CoreEngine(IEnvironment environment) {
         this.environment = environment;
 
         this.printer = new Printer();
-        this.mctsRootNode = new MCTSNode(-1);
+        this.rootNode = new MCTSNode(-1);
     }
 
     private double run() {
-        double reward = this.mctsRootNode.rollOut(this.environment);
+        double reward = this.rootNode.rollOut(this.environment);
         this.environment.reset();
         if(reward == 1 && !this.compressed) {
-            new TreeView(this.mctsRootNode).showTree("Before");
             this.compress();
-            new TreeView(this.mctsRootNode).showTree("After");
         }
         return reward;
     }
 
     private void compress() {
         this.compressed = true;
-        LinkedList<double[]> data = this.mctsRootNode.trainingData(this.environment);
+        LinkedList<double[]> data = this.rootNode.trainingData(this.environment);
         this.environment.reset();
         LinkedList<Double> processed = new LinkedList<>();
         for(double[] vector : data) {
-            Utilities.printVector(vector);
             for (int k = 0; k < vector.length; k++) {
                 if (vector[k] == 1) {
                     processed.add((double) k);
@@ -55,25 +50,29 @@ public class CoreEngine {
                 }
             }
         }
-        int nodes = this.mctsRootNode.getNodes();
+        int nodes = this.rootNode.getNodes();
         MCTSNode compressedTree = new MCTSNode();
         compressedTree.expand(processed);
         if(compressedTree.getNodes() < nodes) {
-            this.printer.printConsole(String.format("Nodes-before: %s", this.mctsRootNode.getNodes()));
-            this.mctsRootNode = compressedTree;
-            this.printer.printConsole(String.format("Nodes-after: %s", this.mctsRootNode.getNodes()));
+            this.printer.printConsole(String.format("Nodes-before: %s", this.rootNode.getNodes()));
+            this.rootNode = compressedTree;
+            this.printer.printConsole(String.format("Nodes-after: %s", this.rootNode.getNodes()));
         }
         this.environment.reset();
     }
 
     public LinkedList<Double> solve(double accuracy) {
-        double avgReward = 0.0D;
+        double reward = 0.0D;
         LinkedList<Double> data = new LinkedList<>();
-        while(avgReward < accuracy) {
-            avgReward = this.run();
-            data.add(avgReward);
+        while(reward < accuracy) {
+            reward = this.run();
+            data.add(reward);
         }
         return data;
+    }
+
+    public LinkedList<double[]> getTrainingData() {
+        return this.rootNode.trainingData(this.environment);
     }
 
     public void testMCTS() {
@@ -99,15 +98,7 @@ public class CoreEngine {
         frame.add(plotCanvas);
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(3);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
-    }
-
-    public MCTSNode getMctsRootNode() {
-        return mctsRootNode;
-    }
-
-    public IEnvironment getEnvironment() {
-        return environment;
     }
 }

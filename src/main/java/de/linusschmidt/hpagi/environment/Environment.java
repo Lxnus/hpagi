@@ -21,7 +21,7 @@ public class Environment implements IEnvironment {
 
     public Environment() {
         this.printer = new Printer();
-        this.dimension = new Dimension(15, 15);
+        this.dimension = new Dimension(5, 5);
 
         this.buildNPC();
         this.buildTargetNPC();

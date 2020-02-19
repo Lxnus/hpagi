@@ -26,14 +26,13 @@ public class Agent {
 
     public void run() {
         this.coreEngine.solve(0.95);
-        LinkedList<double[]> trainingData = this.coreEngine.getMctsRootNode().trainingData(this.coreEngine.getEnvironment());
+        LinkedList<double[]> trainingData = this.coreEngine.getTrainingData();
         if(trainingData != null) {
             for(double[] data : trainingData) {
                 Utilities.printVector(data);
             }
+            this.bayesianNetworkBuilder.setData(new String[] {"True", "False"}, new String[] {"A", "B", "C", "D"}, trainingData);
+            this.bayesianNetworkBuilder.generateBayesianNetwork();
         }
-
-        this.bayesianNetworkBuilder.setData(new String[] {"True", "False"}, new String[] {"A", "B", "C", "D"}, trainingData);
-        this.bayesianNetworkBuilder.generateBayesianNetwork();
     }
 }
