@@ -1,5 +1,6 @@
 package de.linusschmidt.hpagi.environment;
 
+import de.linusschmidt.hpagi.utilities.MathUtilities;
 import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.awt.*;

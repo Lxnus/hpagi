@@ -78,9 +78,12 @@ public class CoreEngine {
 
     public void testMCTS() {
         this.printer.printConsole("Testing monte carlo...");
-        double[][] data = new double[20][];
+        double[][] data = new double[10][];
         for(int i = 0; i < data.length; i++) {
+            long start = System.currentTimeMillis();
             LinkedList<Double> list = this.solve(0.95);
+            long stop = System.currentTimeMillis();
+            this.printer.printConsole(String.format("Computation time: %s", (stop - start)));
             double[] vec = new double[2];
             double avg = 0.0D;
             for (Double aDouble : list) {
