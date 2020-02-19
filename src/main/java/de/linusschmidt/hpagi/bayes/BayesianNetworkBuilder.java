@@ -33,16 +33,30 @@ public class BayesianNetworkBuilder {
         this.translator = new Translator();
     }
 
+    /**
+     * Übergibt alle notwendigen Parameter dem Builder.
+     * @param nodeDescription beschreibt, welche eigenschaft die Knoten haben können (default = 'True', 'False')
+     * @param dataDescriptions sagt aus, wie die Knoten genannt werden (default= 'A', 'B', ...).
+     * @param data gibt die Daten an, die Verwendet werden um das Modell zu bauen.
+     */
     public void setData(String[] nodeDescription, String[] dataDescriptions, LinkedList<double[]> data) {
         this.data = data;
         this.nodeDescription = nodeDescription;
         this.dataDescriptions = dataDescriptions;
 
+
+        // Speichert die Beschreibungen der Knoten im Übersetzter ab.
+        // Der Übersetzer ist hier für den Builder eigen.
         for(String dataDescription : this.dataDescriptions) {
             this.translator.add(dataDescription);
         }
     }
 
+    /**
+     * Generiert das Bayes'sche Netz.
+     * Dieser Prozess kann je nach Größe einige Zeit dauern.
+     * In der Methode sind alle anderen 'build'-Methoden inbegriffen.
+     */
     public void generateBayesianNetwork() {
         this.printer.printConsole("Generating bayesian network...");
         this.build();
@@ -51,6 +65,13 @@ public class BayesianNetworkBuilder {
         this.printer.printConsole("done. - Generate bayesian network!");
     }
 
+    /**
+     * Sagt einen Status vorraus. Dieser wird berechnet, in dem die Tabelle, die Vewendet werden soll 'idx' angegeben
+     * wird und die anderen Kausalitäten.
+     * @param binaryInputs gibt die Bedingungen an. Zum Beispiel: A = 'True', D = 'False'
+     * @param idx gibt die Tabelle an, die bei der Berechnung verwendet werden soll.
+     * @throws InconsistentEvidenceException
+     */
     public void predict(double[] binaryInputs, int idx) throws InconsistentEvidenceException {
         InferenceFactory inferenceFactory = new RelevanceTreeInferenceFactory();
         Inference inference = inferenceFactory.createInferenceEngine(this.network);
@@ -152,21 +173,36 @@ public class BayesianNetworkBuilder {
 
     private void build() {
         this.printer.printConsole("Build network...");
+
+        // Bereitet die Daten für das Netzwerk vor.
         DataTable dataTable = this.generateDataTable(this.data);
         DataTableDataReaderCommand dataReaderCommand = new DataTableDataReaderCommand(dataTable);
+
+        // Lässt die Knoten für das Netzwerk erstellen.
         this.generateNetworkNodes();
 
+        // Jedes Netz muss bei der API 'Bayesserver' über 'VariableReferences' verfügen. Diese werden mithilfe
+        // der oben erstellten Knoten erstellt.
         List<VariableReference> variableReferences = new ArrayList<>();
         for(Variable variable : this.network.getVariables()) {
             variableReferences.add(new VariableReference(variable, ColumnValueType.NAME, variable.getName()));
         }
         EvidenceReaderCommand evidenceReaderCommand = this.generateEvidence(dataReaderCommand, variableReferences);
 
+        // Erstellt die Netzwerk Stuktur. Welche Knoten mit welchen Verbunden werden.
         this.createNetworkStructure(evidenceReaderCommand);
+
+
+        // Erstellt die Wahrscheinlichketstabellen. Die Wahrscheinlichkeitstabellen sind erforderlich um den
+        // Knoten zu sagen, mit welcher Wahrscheinlichkeit die Eigenschaften, die es besitzt eintreffen.
+        // Diese Wahrscheinlichkeiten werden in bei Vorraussagen verwendet und benötigt.
         this.createDistributions(evidenceReaderCommand);
         this.printer.printConsole("done. - Build network!");
     }
 
+    /**
+     * Erstellt die Knoten für das Netz.
+     */
     private void generateNetworkNodes() {
         for(String clazz : this.dataDescriptions) {
             Node node = new Node(clazz, this.nodeDescription);
@@ -174,31 +210,63 @@ public class BayesianNetworkBuilder {
         }
     }
 
+    /**
+     * Erstellt die Struktur des Netzes.
+     * @param evidenceReaderCommand
+     */
     private void createNetworkStructure(EvidenceReaderCommand evidenceReaderCommand) {
         /*
         PCStructuralLearning structuralLearning = new PCStructuralLearning();
         PCStructuralLearningOptions structuralLearningOptions = new PCStructuralLearningOptions();
-        PCStructuralLearningOutput structuralLearningOutput = (PCStructuralLearningOutput) structuralLearning.learn(evidenceReaderCommand, this.network.getNodes(), structuralLearningOptions);
-        for(LinkOutput linkOutput : structuralLearningOutput.getLinkOutputs()) {
-            System.out.println(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
-        }
+        PCStructuralLearningOutput structuralLearningOutput =
+                (PCStructuralLearningOutput) structuralLearning.learn(
+                        evidenceReaderCommand,
+                        this.network.getNodes(),
+                        structuralLearningOptions);
         */
         this.printer.printConsole("Create network structure...");
+
+        // Erstellt den Lernalgorithmus, welcher verwendet werden soll.
         ChowLiuStructuralLearning chowLiuStructuralLearning = new ChowLiuStructuralLearning();
+
+        // Erstellt die Lernoptionen, die eingestellt werden können.
         ChowLiuStructuralLearningOptions chowLiuStructuralLearningOptions = new ChowLiuStructuralLearningOptions();
-        ChowLiuStructuralLearningOutput chowLiuStructuralLearningOutput = (ChowLiuStructuralLearningOutput) chowLiuStructuralLearning.learn(evidenceReaderCommand, this.network.getNodes(), chowLiuStructuralLearningOptions);
+
+        // Der Lernausgang, kann anzeigen, welche Knoten verbunden worden sind etc..
+        ChowLiuStructuralLearningOutput chowLiuStructuralLearningOutput =
+                (ChowLiuStructuralLearningOutput) chowLiuStructuralLearning.learn(
+                        evidenceReaderCommand,
+                        this.network.getNodes(),
+                        chowLiuStructuralLearningOptions);
+
+        // Gibt die Knoten aus, die verbunden worden sind.
         for(LinkOutput linkOutput : chowLiuStructuralLearningOutput.getLinkOutputs()) {
-            this.printer.printConsole(String.format("Link added from %s -> %s", linkOutput.getLink().getFrom().getName(), linkOutput.getLink().getTo().getName()));
+            this.printer.printConsole(String.format("Link added from %s -> %s",
+                    linkOutput.getLink().getFrom().getName(),
+                    linkOutput.getLink().getTo().getName()));
         }
         this.printer.printConsole("done. - Create network structure!");
     }
 
+    /**
+     * Erstellt die Wahrscheinlichkeitstabllen, die benötigt werden um später berechnungen durchzuführen.
+     * @param evidenceReaderCommand
+     */
     private void createDistributions(EvidenceReaderCommand evidenceReaderCommand) {
         this.printer.printConsole("Create distributions...");
+        // Erstellt den Lernalgorithmus, welcher verwendet werden soll.
         ParameterLearning parameterLearning = new ParameterLearning(this.network, new RelevanceTreeInferenceFactory());
+
+        // Erstellt die Lernoptionen, die eingestellt werden können.
         ParameterLearningOptions parameterLearningOptions = new ParameterLearningOptions();
+
+        // Setzt den Entscheidungsalgorithmus auf: Wahrscheinlichkeiten.
         parameterLearningOptions.setDecisionPostProcessing(DecisionPostProcessingMethod.PROBABILITIES);
+
+        // Setzt auf die Optionen, das die Parameter Convergiert werden.
         parameterLearningOptions.setConvergenceMethod(ConvergenceMethod.PARAMETERS);
+
+        // Lässt den Algorithmus die Wahrscheinlichkeit unter dem festgelegten Lernalgorithmus und Optionen erlernen.
         parameterLearning.learn(evidenceReaderCommand, parameterLearningOptions);
         this.printer.printConsole("done. - Create distributions!");
     }
@@ -207,15 +275,38 @@ public class BayesianNetworkBuilder {
         return new DefaultEvidenceReaderCommand(dataReaderCommand, variableReferences, new ReaderOptions());
     }
 
+    /**
+     * Generiert aus einer LinkedList eine Datentabelle, die Verwendet wird, um das Netzwerk zu bauen.
+     * Beispiel:
+     *
+     * A | B | C
+     * ----------
+     * T | F | T
+     * F | T | F
+     * T | T | T
+     * F | T | T
+     *
+     * T = True (1)
+     * F = False (0)
+     *
+     * @param data repräsentiert die Daten. Diese können universell aufgebaut sein.
+     * @return gibt die fertig erstellte DatenTabelle zurück
+     */
     private DataTable generateDataTable(LinkedList<double[]> data) {
         this.printer.printConsole("Generate data table...");
+        // Erstellt die DatenTabelle (Leer).
         DataTable dataTable = new DataTable();
+
+        // Erstellt die Spalten für die Daten.
         DataColumnCollection dataColumns = dataTable.getColumns();
         for(String dataDescription : this.dataDescriptions) {
             dataColumns.add(dataDescription, String.class);
         }
+
+        // Erstellt die Spalten für die Daten.
         DataRowCollection dataRows = dataTable.getRows();
         for(double[] vector : data) {
+            // Da die Daten noch binäre Vektoren sind, müssen diese in 'True', 'False' umgewandelt werden.
             String[] processedNodeData = this.processedNodeData(vector);
             dataRows.add(processedNodeData);
         }
@@ -223,6 +314,11 @@ public class BayesianNetworkBuilder {
         return dataTable;
     }
 
+    /**
+     *
+     * @param preData
+     * @return
+     */
     private String[] processedNodeData(double[] preData) {
         String[] processed = new String[preData.length];
         for(int i = 0; i < processed.length; i++) {

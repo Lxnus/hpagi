@@ -54,25 +54,6 @@ public class Hopfield {
         return output;
     }
 
-    public double[] recreateTo(double minDistance, double[] input, boolean debug) {
-        int iteration = 0;
-        double distance;
-        double[] recreation = input;
-        do {
-            recreation = this.recreate(recreation, 10);
-            distance = MathUtilities.distance(input, recreation);
-            if(debug) {
-                this.printer.printConsole(String.format("Iteration: %s Distance: %s", iteration, distance));
-            }
-            iteration++;
-            if(iteration > 1) {
-                break;
-            }
-        } while (distance > minDistance);
-        Utilities.printVector(recreation);
-        return recreation;
-    }
-
     public void train() {
         for(int i = 1; i < this.neurons; i++) {
             for(int j = 0; j < i; j++) {
@@ -91,6 +72,25 @@ public class Hopfield {
                 this.storage[i] += this.weights[i][j];
             }
         }
+    }
+
+    public double[] recreateTo(double minDistance, double[] input, boolean debug) {
+        int iteration = 0;
+        double distance;
+        double[] recreation = input;
+        do {
+            recreation = this.recreate(recreation, 10);
+            distance = MathUtilities.distance(input, recreation);
+            if(debug) {
+                this.printer.printConsole(String.format("Iteration: %s Distance: %s", iteration, distance));
+            }
+            iteration++;
+            if(iteration > 1) {
+                break;
+            }
+        } while (distance > minDistance);
+        Utilities.printVector(recreation);
+        return recreation;
     }
 
     private double activate(double[] X, int idx) {

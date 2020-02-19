@@ -4,7 +4,7 @@ package de.linusschmidt.hpagi.environment;
  * @author Linus Schmidt
  * All rights reserved!
  */
-public class Entity {
+class Entity {
 
     private int x;
     private int y;
