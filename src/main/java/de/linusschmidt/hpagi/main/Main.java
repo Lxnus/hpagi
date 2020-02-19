@@ -46,7 +46,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        /*
         bayesianTest();
         Main.printer.printConsole("**********************************************");
         cognitiveMultithreadingTest();
@@ -68,7 +67,6 @@ public class Main {
         bayesianParameterTest();
         Main.printer.printConsole("**********************************************");
         translationTest();
-        */
         Main.printer.printConsole("**********************************************");
         testMCTS();
     }
@@ -98,7 +96,7 @@ public class Main {
         bayesianNetworkBuilder.predict(new double[] {0, 1, 0}, 0);
     }
     private static void cognitiveMultithreadingTest() throws InterruptedException, InconsistentEvidenceException {
-        List<double[]> data = new ArrayList<>();
+        LinkedList<double[]> data = new LinkedList<>();
         data.add(new double[] { 0, 1, 1, 0 });
         data.add(new double[] { 1, 0, 0, 1 });
         data.add(new double[] { 1, 1, 0, 0 });

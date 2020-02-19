@@ -44,7 +44,7 @@ public class CognitiveAlgorithm {
         this.bayesianNetworkBuilder.predict(X, 1);
     }
 
-    public void generateBayesianNetwork(String[] nodeDescription, String[] dataDescription, List<double[]> data) {
+    public void generateBayesianNetwork(String[] nodeDescription, String[] dataDescription, LinkedList<double[]> data) {
         this.bayesianNetworkBuilder = new BayesianNetworkBuilder();
         this.bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
         this.bayesianNetworkBuilder.generateBayesianNetwork();

@@ -88,7 +88,7 @@ public class MCTSNode {
         }
         if(!isFinish) {
             current.expand(environment);
-            current = current.select(); //this.selection(environment);
+            current = current.select();
             environment.apply(current.s);
             visited.add(current);
         }
@@ -134,10 +134,6 @@ public class MCTSNode {
 
     public double getV() {
         return v;
-    }
-
-    public double getW() {
-        return w;
     }
 
     public double getS() {

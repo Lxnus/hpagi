@@ -25,7 +25,7 @@ public class BayesianNetworkBuilder {
     private Printer printer;
     private Translator translator;
 
-    private List<double[]> data;
+    private LinkedList<double[]> data;
 
     public BayesianNetworkBuilder() {
         this.network = new Network();
@@ -33,7 +33,7 @@ public class BayesianNetworkBuilder {
         this.translator = new Translator();
     }
 
-    public void setData(String[] nodeDescription, String[] dataDescriptions, List<double[]> data) {
+    public void setData(String[] nodeDescription, String[] dataDescriptions, LinkedList<double[]> data) {
         this.data = data;
         this.nodeDescription = nodeDescription;
         this.dataDescriptions = dataDescriptions;
@@ -207,7 +207,7 @@ public class BayesianNetworkBuilder {
         return new DefaultEvidenceReaderCommand(dataReaderCommand, variableReferences, new ReaderOptions());
     }
 
-    private DataTable generateDataTable(List<double[]> data) {
+    private DataTable generateDataTable(LinkedList<double[]> data) {
         this.printer.printConsole("Generate data table...");
         DataTable dataTable = new DataTable();
         DataColumnCollection dataColumns = dataTable.getColumns();
