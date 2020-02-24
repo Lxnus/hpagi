@@ -85,9 +85,6 @@ public class Hopfield {
                 this.printer.printConsole(String.format("Iteration: %s Distance: %s", iteration, distance));
             }
             iteration++;
-            if(iteration > 1) {
-                break;
-            }
         } while (distance > minDistance);
         Utilities.printVector(recreation);
         return recreation;
