@@ -1,7 +1,7 @@
-package de.linusschmidt.hpagi.core.neuralnet.neurons;
+package de.linusschmidt.hpagi.core.networks.neuralnet.neurons;
 
-import de.linusschmidt.hpagi.core.neuralnet.utilities.Connection;
-import de.linusschmidt.hpagi.core.neuralnet.utilities.Functions;
+import de.linusschmidt.hpagi.core.networks.neuralnet.utilities.Connection;
+import de.linusschmidt.hpagi.core.networks.neuralnet.utilities.Functions;
 import de.linusschmidt.hpagi.utilities.MathUtilities;
 
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ import java.util.List;
  * @author Linus Schmidt
  * All rights reserved!
  */
-public class OutputNeuron implements INeuron {
+public class HiddenNeuron implements INeuron {
 
     private double biasValue = 0.0D;
-    private double neuronValue = 0.0D;
+	private double neuronValue = 0.0D;
 	
 	private Functions function = null;
 	

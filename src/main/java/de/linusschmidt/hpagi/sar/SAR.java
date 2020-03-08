@@ -1,6 +1,6 @@
 package de.linusschmidt.hpagi.sar;
 
-import de.linusschmidt.hpagi.network.Hopfield;
+import de.linusschmidt.hpagi.core.memory.Hopfield;
 import de.linusschmidt.hpagi.utilities.Printer;
 import de.linusschmidt.hpagi.utilities.Utilities;
 

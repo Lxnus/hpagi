@@ -1,4 +1,4 @@
-package de.linusschmidt.hpagi.core.neuralnet.utilities;
+package de.linusschmidt.hpagi.core.networks.neuralnet.utilities;
 
 /**
  * @author Linus Schmidt

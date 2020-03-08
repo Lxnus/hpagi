@@ -1,6 +1,8 @@
 package de.linusschmidt.hpagi.utilities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Linus Schmidt
@@ -41,17 +43,72 @@ public class MathUtilities {
         return Math.sqrt(x * x + y * y);
     }
 
-    public static double distance(double[] X, double[] Y) {
-        double d = 0.0D;
-        int length = Math.min(X.length, Y.length);
-        for(int i = 0; i < length; i++) {
-            d += (Y[i] - X[i]) * (Y[i] - X[i]);
+    public static double distance(double[] x, double[] y) {
+        if(x.length != y.length) {
+            throw new IllegalArgumentException("Invalid array length");
         }
-        return Math.sqrt(d);
+        int length = x.length;
+        double sum = 0.0D;
+        for(int i = 0; i < length; i++) {
+            double buffer = y[i] - x[i];
+            double distance = buffer * buffer;
+            sum += distance;
+        }
+        return Math.sqrt(sum);
     }
 
-    private static double normalize(double x, double min, double max) {
+    public static double normalize(double x, double min, double max) {
         return (x - min) / (max - min);
+    }
+
+    public static double standardDeviation(List<Double> values) {
+        double mean = MathUtilities.mean(values);
+        double output = 0.0D;
+        for(double value : values) {
+            double distance = value - mean;
+            output += distance * distance;
+        }
+        return Math.sqrt(output / (double) values.size());
+    }
+
+    public static double deltaStandardDeviation(List<Double> values) {
+        List<Double> deltaValues = MathUtilities.getDeltas(values);
+        double mean = MathUtilities.deltaMean(values);
+        double output = 0.0D;
+        for(double value : deltaValues) {
+            double distance = value - mean;
+            output += distance * distance;
+        }
+        return Math.sqrt(output / MathUtilities.getDeltaLength(values));
+    }
+
+    public static List<Double> getDeltas(List<Double> values) {
+        List<Double> deltas = new ArrayList<>();
+        for(int i = 0; i < MathUtilities.getDeltaLength(values) - 1; i++) {
+            deltas.add(Math.abs(values.get(i + 1) - values.get(i)));
+        }
+        return deltas;
+    }
+
+    public static double deltaMean(List<Double> values) {
+        List<Double> deltas = MathUtilities.getDeltas(values);
+        return (MathUtilities.sum(deltas) / MathUtilities.getDeltaLength(values));
+    }
+
+    public static double sum(List<Double> values) {
+        double sum = 0.0D;
+        for(Double value : values) {
+            sum += value;
+        }
+        return sum;
+    }
+
+    public static int getDeltaLength(List<Double> values) {
+        return values.size() - 1;
+    }
+
+    public static double mean(List<Double> values) {
+        return MathUtilities.sum(values) / (double) values.size();
     }
 
     public static int cbr(double[] X, double x, double y) {

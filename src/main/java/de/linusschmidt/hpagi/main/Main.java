@@ -13,7 +13,7 @@ import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.cognitive.CognitiveAlgorithm;
 import de.linusschmidt.hpagi.core.CoreEngine;
 import de.linusschmidt.hpagi.environment.IEnvironment;
-import de.linusschmidt.hpagi.network.Hopfield;
+import de.linusschmidt.hpagi.core.memory.Hopfield;
 import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
 import de.linusschmidt.hpagi.utilities.Graph;
