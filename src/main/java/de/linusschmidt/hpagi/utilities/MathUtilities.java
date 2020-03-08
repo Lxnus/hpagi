@@ -2,6 +2,7 @@ package de.linusschmidt.hpagi.utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -202,20 +203,21 @@ public class MathUtilities {
         return new double[] { mat[xIDX][0], mat[yIDX][1] };
     }
 
-    public static void cbr2DRL(double[][] mat, double pX, double pY, double tX, double tY) {
+    public static LinkedList<double[]> cbr2DRL(double[][] mat, double pX, double pY, double tX, double tY) {
         int steps = 0;
+        LinkedList<double[]> history = new LinkedList<>();
         do {
             double[] Y = MathUtilities.cbr2D(mat, pX, pY, tX, tY);
             double x = Y[0];
             double y = Y[1];
             pX += x;
             pY += y;
-            MathUtilities.printer.printConsole(String.format("x-Move: %s", x));
-            MathUtilities.printer.printConsole(String.format("y-Move: %s", y));
             steps++;
+            history.add(Y);
         } while (!(Math.abs(pX) >= Math.abs(tX)) || !(Math.abs(pY) >= Math.abs(tY)));
         MathUtilities.printer.printConsole(String.format("Steps: %s", steps));
         MathUtilities.printer.printConsole(String.format("x, y: %s, %s -> %s, %s", pX, pY, tX, tY));
+        return history;
     }
 
     /**
