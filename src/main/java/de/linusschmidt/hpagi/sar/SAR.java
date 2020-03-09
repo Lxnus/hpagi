@@ -1,58 +1,103 @@
 package de.linusschmidt.hpagi.sar;
 
-import de.linusschmidt.hpagi.core.memory.Hopfield;
-import de.linusschmidt.hpagi.utilities.MathUtilities;
-import de.linusschmidt.hpagi.utilities.Printer;
+import de.linusschmidt.hpagi.core.networks.neuralnet.neuralnetwork.NeuralNetwork;
+import de.linusschmidt.hpagi.core.networks.neuralnet.utilities.Functions;
+import de.linusschmidt.hpagi.environment.Environment;
 import de.linusschmidt.hpagi.utilities.Utilities;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class SAR {
 
-    private Loader loader;
-    private Printer printer;
-
-    private List<Hopfield> memories;
-
     public SAR() {
-        this.loader = new Loader();
-        this.printer = new Printer();
-    }
+        Environment environment = new Environment();
 
-    private void learn(double[][] x, double[] y) {
-        LinkedList<double[]> histories = MathUtilities.cbr2DRL(x, 0, 2, y[0], y[1]);
-        for(double[] history : histories) {
-            Utilities.printVector(history);
+        LinkedList<DataBuffer> dataBuffers = new LinkedList<>();
+
+        for(int i = 0; i < 1000; i++) {
+            environment.apply((int) (Math.random() * 4));
+            dataBuffers.add(this.toBinaryState(environment.getLastRecord(), environment));
         }
-    }
 
-    private double[] toLength(double[] x, int length) {
-        double[] buffer = new double[length];
-        for(int i = 0; i < length; i++) {
-            if(i < x.length) {
-                buffer[i] = x[i];
-            } else {
-                buffer[i] = 0.0D;
+        NeuralNetwork neuralNetwork = new NeuralNetwork();
+        neuralNetwork.setInputNeurons(4);
+        neuralNetwork.setHiddenNeurons(5);
+        neuralNetwork.setOutputNeurons(2);
+
+        neuralNetwork.createNetwork();
+
+        neuralNetwork.hiddenFunction(Functions.SIGMOID);
+        neuralNetwork.outputFunction(Functions.SIGMOID);
+
+        for(int iter = 0; iter < 100; iter++) {
+            for (int i = 0; i < dataBuffers.size() - 1; i++) {
+                DataBuffer temp = dataBuffers.get(i);
+                for (int j = 0; j < temp.binaryAction.length; j++) {
+                    neuralNetwork.getInputNeurons().get(j).setValue(temp.binaryAction[j]);
+                }
+                neuralNetwork.train(0.4D, temp.binaryState, 10);
             }
         }
-        return buffer;
+
+        neuralNetwork.getInputNeurons().get(0).setValue(0);
+        neuralNetwork.getInputNeurons().get(1).setValue(0);
+        neuralNetwork.getInputNeurons().get(2).setValue(1);
+        neuralNetwork.getInputNeurons().get(3).setValue(0);
+        neuralNetwork.printOutputs();
+
+        System.out.println();
+
+        neuralNetwork.getInputNeurons().get(0).setValue(1);
+        neuralNetwork.getInputNeurons().get(1).setValue(0);
+        neuralNetwork.getInputNeurons().get(2).setValue(0);
+        neuralNetwork.getInputNeurons().get(3).setValue(0);
+        neuralNetwork.printOutputs();
+
+        System.out.println();
+
+        neuralNetwork.getInputNeurons().get(0).setValue(0);
+        neuralNetwork.getInputNeurons().get(1).setValue(0);
+        neuralNetwork.getInputNeurons().get(2).setValue(0);
+        neuralNetwork.getInputNeurons().get(3).setValue(1);
+        neuralNetwork.printOutputs();
+
+    }
+
+    private DataBuffer toBinaryState(double[] record, Environment environment) {
+        double[] binaryAction = new double[environment.possibleActions().length];
+        for(int i = 0; i < binaryAction.length; i++) {
+            if(record[0] == i) {
+                binaryAction[i] = 1;
+            }
+        }
+
+        double[] binaryState = new double[] {
+                record[3] - record[1],
+                record[4] - record[2]
+        };
+
+        return new DataBuffer(binaryState, binaryAction);
+    }
+
+    private class DataBuffer {
+
+        private double[] binaryState;
+        private double[] binaryAction;
+
+        private DataBuffer(double[] binaryState, double[] binaryAction) {
+            this.binaryState = binaryState;
+            this.binaryAction = binaryAction;
+        }
+
+        @Override
+        public String toString() {
+            Utilities.printVector(this.binaryState);
+            Utilities.printVector(this.binaryAction);
+            return "";
+        }
     }
 
     public static void main(String[] args) {
-        SAR sar = new SAR();
-        // Zustandsveränderung
-        double[][] x = new double[][] {
-                { 2, 4 },
-                { 0, 1 },
-                { 2, 5 },
-                { -1, -1 },
-        };
-        double[] y = new double[] {
-                32, 23
-        };
-
-        sar.learn(x, y);
+        new SAR();
     }
 }

@@ -28,7 +28,6 @@ public class HiddenNeuron implements INeuron {
 	@Override
 	public double getValue() {
 		this.reset();
-		this.neuronValue = 0.0D;
 		for(Connection connection : this.connections) {
 			this.neuronValue += connection.getWeight() * connection.getFromNeuron().getValue() + this.biasValue;
 		}

@@ -13,6 +13,8 @@ public class Environment implements IEnvironment {
     private int startX;
     private int startY;
 
+    private double[] lastRecord;
+
     private Entity npc;
     private Entity targetNPC;
     private Dimension dimension;
@@ -56,6 +58,8 @@ public class Environment implements IEnvironment {
 
     @Override
     public void apply(double s) {
+        double lastX = this.npc.getX();
+        double lastY = this.npc.getY();
         if(s == 0) {
             this.npc.update(1, 0);
         } else if(s == 1) {
@@ -65,6 +69,13 @@ public class Environment implements IEnvironment {
         } else if(s == 3) {
             this.npc.update(0, -1);
         }
+        this.lastRecord = new double[] {
+                s,
+                lastX,
+                lastY,
+                this.npc.getX(),
+                this.npc.getY()
+        };
     }
 
     @Override
@@ -89,6 +100,10 @@ public class Environment implements IEnvironment {
     public void reset() {
         this.npc.setX(this.startX);
         this.npc.setY(this.startY);
+    }
+
+    public double[] getLastRecord() {
+        return this.lastRecord;
     }
 
     /*

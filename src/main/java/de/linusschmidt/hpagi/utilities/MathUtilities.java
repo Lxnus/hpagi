@@ -14,7 +14,7 @@ public class MathUtilities {
     private static Printer printer = new Printer();
 
     public static double sigmoid(double inputValue) {
-        return 1.0 / (1.0 + Math.exp(-inputValue));
+        return 1 / (1 + Math.exp(-inputValue));
     }
 
     public static double identity(double inputValue) {
