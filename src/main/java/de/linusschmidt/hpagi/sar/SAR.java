@@ -43,36 +43,6 @@ public class SAR {
                 neuralNetwork.train(0.9D, temp.binaryState, 25);
             }
         }
-
-        neuralNetwork.getInputNeurons().get(0).setValue(0);
-        neuralNetwork.getInputNeurons().get(1).setValue(0);
-        neuralNetwork.getInputNeurons().get(2).setValue(1);
-        neuralNetwork.getInputNeurons().get(3).setValue(0);
-        Utilities.printVector(output(neuralNetwork.getOutputs(), translation));
-
-        System.out.println();
-
-        neuralNetwork.getInputNeurons().get(0).setValue(1);
-        neuralNetwork.getInputNeurons().get(1).setValue(0);
-        neuralNetwork.getInputNeurons().get(2).setValue(0);
-        neuralNetwork.getInputNeurons().get(3).setValue(0);
-        Utilities.printVector(output(neuralNetwork.getOutputs(), translation));
-
-        System.out.println();
-
-        neuralNetwork.getInputNeurons().get(0).setValue(0);
-        neuralNetwork.getInputNeurons().get(1).setValue(0);
-        neuralNetwork.getInputNeurons().get(2).setValue(0);
-        neuralNetwork.getInputNeurons().get(3).setValue(1);
-        Utilities.printVector(output(neuralNetwork.getOutputs(), translation));
-
-        System.out.println();
-
-        neuralNetwork.getInputNeurons().get(0).setValue(0);
-        neuralNetwork.getInputNeurons().get(1).setValue(1);
-        neuralNetwork.getInputNeurons().get(2).setValue(0);
-        neuralNetwork.getInputNeurons().get(3).setValue(0);
-        Utilities.printVector(output(neuralNetwork.getOutputs(), translation));
     }
 
     private double[] output(double[] x, double[][] translation) {
@@ -125,11 +95,9 @@ public class SAR {
             this.binaryAction = binaryAction;
         }
 
-        @Override
-        public String toString() {
+        public void print() {
             Utilities.printVector(this.binaryState);
             Utilities.printVector(this.binaryAction);
-            return "";
         }
     }
 
