@@ -19,6 +19,11 @@ public class SAR {
             dataBuffers.add(this.toBinaryState(environment.getLastRecord(), environment));
         }
 
+        double[][] translation = new double[][] {
+                { -1, 0, 1 },
+                { 0.5, 0, 1}
+        };
+
         NeuralNetwork neuralNetwork = new NeuralNetwork();
         neuralNetwork.setInputNeurons(4);
         neuralNetwork.setHiddenNeurons(5);
@@ -35,7 +40,7 @@ public class SAR {
                 for (int j = 0; j < temp.binaryAction.length; j++) {
                     neuralNetwork.getInputNeurons().get(j).setValue(temp.binaryAction[j]);
                 }
-                neuralNetwork.train(0.4D, temp.binaryState, 10);
+                neuralNetwork.train(0.9D, temp.binaryState, 25);
             }
         }
 
@@ -43,7 +48,7 @@ public class SAR {
         neuralNetwork.getInputNeurons().get(1).setValue(0);
         neuralNetwork.getInputNeurons().get(2).setValue(1);
         neuralNetwork.getInputNeurons().get(3).setValue(0);
-        neuralNetwork.printOutputs();
+        Utilities.printVector(output(neuralNetwork.getOutputs(), translation));
 
         System.out.println();
 
@@ -51,7 +56,7 @@ public class SAR {
         neuralNetwork.getInputNeurons().get(1).setValue(0);
         neuralNetwork.getInputNeurons().get(2).setValue(0);
         neuralNetwork.getInputNeurons().get(3).setValue(0);
-        neuralNetwork.printOutputs();
+        Utilities.printVector(output(neuralNetwork.getOutputs(), translation));
 
         System.out.println();
 
@@ -59,10 +64,48 @@ public class SAR {
         neuralNetwork.getInputNeurons().get(1).setValue(0);
         neuralNetwork.getInputNeurons().get(2).setValue(0);
         neuralNetwork.getInputNeurons().get(3).setValue(1);
-        neuralNetwork.printOutputs();
+        Utilities.printVector(output(neuralNetwork.getOutputs(), translation));
 
+        System.out.println();
+
+        neuralNetwork.getInputNeurons().get(0).setValue(0);
+        neuralNetwork.getInputNeurons().get(1).setValue(1);
+        neuralNetwork.getInputNeurons().get(2).setValue(0);
+        neuralNetwork.getInputNeurons().get(3).setValue(0);
+        Utilities.printVector(output(neuralNetwork.getOutputs(), translation));
     }
 
+    private double[] output(double[] x, double[][] translation) {
+        double[] normalValues = translation[0];
+        double[] translationValues = translation[1];
+
+        int[] indices = new int[x.length];
+        for(int i = 0; i < x.length; i++) {
+            int idx = -1;
+            double min = Double.MAX_VALUE;
+            for(int j = 0; j < translationValues.length; j++) {
+                double distance = Math.sqrt(Math.pow(translationValues[j] - x[i], 2));
+                if(distance < min) {
+                    min = distance;
+                    idx = j;
+                }
+            }
+            indices[i] = idx;
+        }
+        double[] output = new double[x.length];
+        for(int i = 0; i < output.length; i++) {
+            output[i] = normalValues[indices[i]];
+        }
+        return output;
+    }
+
+    /**
+     * Record require binary changes.
+     * Negative changes is set to 0.5.
+     * @param record
+     * @param environment
+     * @return
+     */
     private DataBuffer toBinaryState(double[] record, Environment environment) {
         double[] binaryAction = new double[environment.possibleActions().length];
         for(int i = 0; i < binaryAction.length; i++) {
@@ -72,8 +115,8 @@ public class SAR {
         }
 
         double[] binaryState = new double[] {
-                record[3] - record[1],
-                record[4] - record[2]
+                record[3] - record[1] < 0 ? 0.5 : record[3] - record[1],
+                record[4] - record[2] < 0 ? 0.5 : record[4] - record[2]
         };
 
         return new DataBuffer(binaryState, binaryAction);
@@ -98,6 +141,6 @@ public class SAR {
     }
 
     public static void main(String[] args) {
-        new SAR();
+        SAR sar = new SAR();
     }
 }

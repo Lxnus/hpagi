@@ -95,7 +95,7 @@ public class NeuralNetwork {
 		}
 	}
 	
-	private double[] getOutputs() {
+	public double[] getOutputs() {
 		double[] outputs = new double[this.outputNeurons.size()];
 		for(int i = 0; i < this.outputNeurons.size(); i++) {
 			outputs[i] = this.outputNeurons.get(i).getValue();
