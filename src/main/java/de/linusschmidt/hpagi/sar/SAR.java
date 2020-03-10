@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public class SAR {
 
-    public SAR() {
+    private SAR() {
         Environment environment = new Environment();
 
         LinkedList<DataBuffer> dataBuffers = new LinkedList<>();
@@ -99,13 +99,6 @@ public class SAR {
         return output;
     }
 
-    /**
-     * Record require binary changes.
-     * Negative changes is set to 0.5.
-     * @param record
-     * @param environment
-     * @return
-     */
     private DataBuffer toBinaryState(double[] record, Environment environment) {
         double[] binaryAction = new double[environment.possibleActions().length];
         for(int i = 0; i < binaryAction.length; i++) {
@@ -122,7 +115,7 @@ public class SAR {
         return new DataBuffer(binaryState, binaryAction);
     }
 
-    private class DataBuffer {
+    private static class DataBuffer {
 
         private double[] binaryState;
         private double[] binaryAction;
