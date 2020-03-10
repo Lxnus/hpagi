@@ -25,8 +25,6 @@ public class Loader {
             if(idx++ > maxSize && maxSize != -1) {
                 break;
             }
-            String[] lineCutter = line.split("[     \t]");
-            System.out.println(lineCutter.length);
             SpeechDataBuffer speechDataBuffer = new SpeechDataBuffer(line);
             speechDataBuffers.add(speechDataBuffer);
         }
