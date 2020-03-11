@@ -1,7 +1,7 @@
 package de.linusschmidt.hpagi.agent;
 
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
-import de.linusschmidt.hpagi.core.CoreEngine;
+import de.linusschmidt.hpagi.core.tree.MCTSExecutor;
 import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.utilities.Utilities;
 
@@ -13,7 +13,7 @@ import java.util.LinkedList;
  */
 public class Agent {
 
-    private CoreEngine coreEngine;
+    private MCTSExecutor coreEngine;
     private BayesianNetworkBuilder bayesianNetworkBuilder;
 
     public Agent() {
@@ -25,7 +25,7 @@ public class Agent {
      * @param environment die selbst kreierte Umgebung.
      */
     public void setEnvironment(IEnvironment environment) {
-        this.coreEngine = new CoreEngine(environment);
+        this.coreEngine = new MCTSExecutor(environment);
     }
 
     /**

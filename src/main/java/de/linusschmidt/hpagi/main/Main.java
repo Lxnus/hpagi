@@ -11,7 +11,7 @@ import com.bayesserver.learning.structure.*;
 import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
 import de.linusschmidt.hpagi.cognitive.CognitiveAlgorithm;
-import de.linusschmidt.hpagi.core.CoreEngine;
+import de.linusschmidt.hpagi.core.tree.MCTSExecutor;
 import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.core.memory.Hopfield;
 import de.linusschmidt.hpagi.translation.Translator;
@@ -73,7 +73,7 @@ public class Main {
 
     private static void testMCTS() {
         IEnvironment environment = new de.linusschmidt.hpagi.environment.Environment();
-        CoreEngine coreEngine = new CoreEngine(environment);
+        MCTSExecutor coreEngine = new MCTSExecutor(environment);
         coreEngine.testMCTS();
     }
 

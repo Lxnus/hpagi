@@ -1,4 +1,4 @@
-package de.linusschmidt.hpagi.core;
+package de.linusschmidt.hpagi.core.tree;
 
 import de.linusschmidt.hpagi.core.tree.MCTSNode;
 import de.linusschmidt.hpagi.environment.IEnvironment;
@@ -13,7 +13,7 @@ import java.util.LinkedList;
  * @author Linus Schmidt
  * All rights reserved!
  */
-public class CoreEngine {
+public class MCTSExecutor {
 
     private boolean compressed = false;
 
@@ -21,7 +21,7 @@ public class CoreEngine {
     private MCTSNode rootNode;
     private IEnvironment environment;
 
-    public CoreEngine(IEnvironment environment) {
+    public MCTSExecutor(IEnvironment environment) {
         this.environment = environment;
 
         this.printer = new Printer();
