@@ -1,3 +1,10 @@
-import pyNN.brian as sim
+import nmpi
 
-sim.list_standard_models()
+import pyNN.spiNNaker as pynn
+
+client = nmpi.Client();
+
+print(pynn.IF_cond_exp.default_parameters)
+
+pynn.setup(0.1)
+
