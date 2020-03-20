@@ -1,25 +1,46 @@
 import pylab
-import pyNN.spiNNaker as p
+import spynnaker8 as network
 
-p.setup(timestep=1.0)
+network.setup(timestep=1.0)
 
-population1 = p.Population(1, p.IF_cond_exp, {}, label="population1")
-input = p.Population(1, p.SpikeSourceArray, {"spike_times": [0]}, label="input")
+n_Neurons = 100
 
-input_proj = p.Projection(input, population1, p.OneToOneConnector(), p.StaticSynapse(weight=5.0, delay=1))
+populationA = network.Population(n_Neurons, network.IF_cond_exp, {}, label="pop_A")
+populationB = network.Population(n_Neurons, network.IF_cond_exp, {}, label="pop_B")
 
-population1.record(['spikes', 'v'])
+populationA.record("spikes")
+populationB.record("spikes")
 
-p.run(10)
+inputA = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0), {}, label="input_A")
+inputB = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0), {}, label="input_B")
 
-spikes = population1.getSpikes()
+training = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0, start=2000.0), {}, label="training")
 
-v = population1.get_v()
+a_A_projection = network.Projection(inputA, populationA, network.OneToOneConnector(), synapse_type=network.StaticSynapse(weight=2.0, delay=1.0))
+b_B_projection = network.Projection(inputB, populationB, network.OneToOneConnector(), synapse_type=network.StaticSynapse(weight=2.0, delay=10.0))
 
-time = [i[1] for i in v if i[0] == 0]
-membrane_voltage = [i[2] for i in v if i[0] == 0]
-pylab.plot(time, membrane_voltage)
-pylab.xlabel("Time (ms)")
-pylab.ylabel("Membrane Voltage")
-pylab.axis([0, 10, -75, -45])
+training_A_projection = network.Projection(training, populationA, network.OneToOneConnector())
+training_B_projection = network.Projection(training, populationB, network.OneToOneConnector())
+
+timing_rule = network.SpikePairRule()
+weight_rule = network.AdditiveWeightDependence(w_max=5.0, w_min=0.0)
+
+stdpModel = network.STDPMechanism(timing_dependence=timing_rule, weight_dependence=weight_rule)
+stdpProjection = network.Projection(populationA, populationB, network.OneToOneConnector(), synapse_type=stdpModel)
+
+network.run(5000)
+
+spikesA = populationA.getSpikes()
+spikesB = populationB.getSpikes()
+
+print(stdpProjection.getWeights())
+
+network.end()
+
+pylab.figure()
+pylab.xlim((0, 5000))
+pylab.plot([i[1] for i in spikesA], [i[0] for i in spikesA], "r.")
+pylab.plot([i[1] for i in spikesB], [i[0] for i in spikesB], "b.")
+pylab.xlabel("Time/ms")
+pylab.ylabel("Spike")
 pylab.show()
