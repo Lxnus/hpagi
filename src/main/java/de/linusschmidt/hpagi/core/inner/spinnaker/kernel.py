@@ -44,11 +44,14 @@ network.end()
 line_properties = [{'color': 'red', 'markersize': 5},
                    {'color': 'blue', 'markersize': 2}]
 
-plot.Figure(plot.Panel(spikesA,
+figure = plot.Figure(plot.Panel(spikesA,
                        spikesB,
                        yticks=True,
                        xlim=(0, 5000),
                        line_properties=line_properties),
                        title="Network",
                        annotations="Simulated with: {}".format(network.name()))
+
 plt.show()
+
+figure.save("outputFile.png")
