@@ -7,31 +7,31 @@ network.setup(timestep=1.0)
 n_Neurons = 100
 simulationTime = 5000
 
-populationA = network.Population(n_Neurons, network.IF_cond_exp(), label="pop_A")
-populationB = network.Population(n_Neurons, network.IF_cond_exp(), label="pop_B")
+populationA = network.Population(n_Neurons, network.IF_curr_exp(), label="popA")
+populationB = network.Population(n_Neurons, network.IF_curr_exp(), label="popB")
 
 populationA.record("spikes")
 populationB.record("spikes")
 
-inputA = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0), {}, label="input_A")
-inputB = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0), {}, label="input_B")
+inputA = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0), label="inputA")
+inputB = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0), label="inputB")
 
-training = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0, start=1500.0, duration=1500.0), {}, label="training")
+training = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0, start=1500.0, duration=1500.0), label="training")
 
-a_A_projection = network.Projection(inputA, populationA, network.OneToOneConnector(),
+network.Projection(inputA, populationA, network.OneToOneConnector(),
                                     synapse_type=network.StaticSynapse(weight=2.0))
-b_B_projection = network.Projection(inputB, populationB, network.OneToOneConnector(),
+network.Projection(inputB, populationB, network.OneToOneConnector(),
                                     synapse_type=network.StaticSynapse(weight=2.0))
 
-training_A_projection = network.Projection(training, populationA, network.OneToOneConnector(),
+network.Projection(training, populationA, network.OneToOneConnector(),
                                            synapse_type=network.StaticSynapse(weight=5.0, delay=1.0))
-training_B_projection = network.Projection(training, populationB, network.OneToOneConnector(),
+network.Projection(training, populationB, network.OneToOneConnector(),
                                            synapse_type=network.StaticSynapse(weight=5.0, delay=10.0))
 
-timing_rule = network.SpikePairRule(A_plus=0.5, A_minus=0.5)
+timing_rule = network.SpikePairRule(tau_plus=20.0, tau_minus=20.0, A_plus=0.5, A_minus=0.5)
 weight_rule = network.AdditiveWeightDependence(w_max=5.0, w_min=0.0)
 
-stdpModel = network.STDPMechanism(timing_dependence=timing_rule, weight_dependence=weight_rule)
+stdpModel = network.STDPMechanism(timing_dependence=timing_rule, weight_dependence=weight_rule, weight=0.0, delay=5.0)
 stdpProjection = network.Projection(populationA, populationB, network.OneToOneConnector(), synapse_type=stdpModel)
 
 network.run(simulationTime)
