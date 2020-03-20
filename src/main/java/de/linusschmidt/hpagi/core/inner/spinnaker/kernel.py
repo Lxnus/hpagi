@@ -1,12 +1,13 @@
-import pylab
+import matplotlib.pyplot as plt
+import pyNN.utility.plotting as plot
 import spynnaker8 as network
 
 network.setup(timestep=1.0)
 
 n_Neurons = 100
 
-populationA = network.Population(n_Neurons, network.IF_cond_exp, {}, label="pop_A")
-populationB = network.Population(n_Neurons, network.IF_cond_exp, {}, label="pop_B")
+populationA = network.Population(n_Neurons, network.IF_cond_exp(), label="pop_A")
+populationB = network.Population(n_Neurons, network.IF_cond_exp(), label="pop_B")
 
 populationA.record("spikes")
 populationB.record("spikes")
@@ -22,7 +23,7 @@ b_B_projection = network.Projection(inputB, populationB, network.OneToOneConnect
 training_A_projection = network.Projection(training, populationA, network.OneToOneConnector())
 training_B_projection = network.Projection(training, populationB, network.OneToOneConnector())
 
-timing_rule = network.SpikePairRule()
+timing_rule = network.SpikePairRule(A_plus=0.5, A_minus=0.5)
 weight_rule = network.AdditiveWeightDependence(w_max=5.0, w_min=0.0)
 
 stdpModel = network.STDPMechanism(timing_dependence=timing_rule, weight_dependence=weight_rule)
@@ -30,17 +31,24 @@ stdpProjection = network.Projection(populationA, populationB, network.OneToOneCo
 
 network.run(5000)
 
-spikesA = populationA.getSpikes()
-spikesB = populationB.getSpikes()
+neoA = populationA.get_data(variables=["spikes"])
+spikesA = neoA.segments[0].spiketrains
+
+neoB = populationB.get_data(variables=["spikes"])
+spikesB = neoB.segments[0].spiketrains
 
 print(stdpProjection.getWeights())
 
 network.end()
 
-pylab.figure()
-pylab.xlim((0, 5000))
-pylab.plot([i[1] for i in spikesA], [i[0] for i in spikesA], "r.")
-pylab.plot([i[1] for i in spikesB], [i[0] for i in spikesB], "b.")
-pylab.xlabel("Time/ms")
-pylab.ylabel("Spike")
-pylab.show()
+line_properties = [{'color': 'red', 'markersize': 5},
+                   {'color': 'blue', 'markersize': 2}]
+
+plot.Figure(plot.Panel(spikesA,
+                       spikesB,
+                       yticks=True,
+                       xlim=(0, 5000),
+                       line_properties=line_properties),
+                       title="Network",
+                       annotations="Simulated with: {}".format(network.name()))
+plt.show()
