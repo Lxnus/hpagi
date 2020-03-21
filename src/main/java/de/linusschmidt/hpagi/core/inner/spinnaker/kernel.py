@@ -5,7 +5,7 @@ import spynnaker8 as network
 network.setup(timestep=1.0)
 
 n_Neurons = 100
-simulationTime = 5000
+simulationTime = 10000
 
 populationA = network.Population(n_Neurons, network.IF_curr_exp(), label="popA")
 populationB = network.Population(n_Neurons, network.IF_curr_exp(), label="popB")
@@ -16,7 +16,7 @@ populationB.record("spikes")
 inputA = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0), label="inputA")
 inputB = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0), label="inputB")
 
-training = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0, start=1500.0, duration=1500.0), label="training")
+training = network.Population(n_Neurons, network.SpikeSourcePoisson(rate=10.0, start=1500.0, duration=6000.0), label="training")
 
 network.Projection(inputA, populationA, network.OneToOneConnector(),
                                     synapse_type=network.StaticSynapse(weight=2.0))
