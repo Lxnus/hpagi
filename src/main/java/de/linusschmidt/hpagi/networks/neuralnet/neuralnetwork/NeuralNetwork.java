@@ -94,6 +94,15 @@ public class NeuralNetwork {
 			}
 		}
 	}
+
+	public void setInputValues(double[] inputValues) {
+    	if(inputValues.length != this.getInputNeurons().size()) {
+    		throw new ArrayIndexOutOfBoundsException();
+		}
+    	for(int i = 0; i < this.inputNeurons.size(); i++) {
+    		this.inputNeurons.get(i).setValue(inputValues[i]);
+		}
+	}
 	
 	public double[] getOutputs() {
 		double[] outputs = new double[this.outputNeurons.size()];
