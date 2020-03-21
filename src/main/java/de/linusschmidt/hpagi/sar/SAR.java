@@ -1,7 +1,7 @@
 package de.linusschmidt.hpagi.sar;
 
-import de.linusschmidt.hpagi.core.networks.neuralnet.neuralnetwork.NeuralNetwork;
-import de.linusschmidt.hpagi.core.networks.neuralnet.utilities.Functions;
+import de.linusschmidt.hpagi.networks.neuralnet.neuralnetwork.NeuralNetwork;
+import de.linusschmidt.hpagi.networks.neuralnet.utilities.Functions;
 import de.linusschmidt.hpagi.environment.Environment;
 import de.linusschmidt.hpagi.utilities.Utilities;
 

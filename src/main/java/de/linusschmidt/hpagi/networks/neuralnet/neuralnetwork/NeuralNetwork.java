@@ -1,10 +1,10 @@
-package de.linusschmidt.hpagi.core.networks.neuralnet.neuralnetwork;
+package de.linusschmidt.hpagi.networks.neuralnet.neuralnetwork;
 
-import de.linusschmidt.hpagi.core.networks.neuralnet.neurons.HiddenNeuron;
-import de.linusschmidt.hpagi.core.networks.neuralnet.neurons.InputNeuron;
-import de.linusschmidt.hpagi.core.networks.neuralnet.neurons.OutputNeuron;
-import de.linusschmidt.hpagi.core.networks.neuralnet.utilities.Connection;
-import de.linusschmidt.hpagi.core.networks.neuralnet.utilities.Functions;
+import de.linusschmidt.hpagi.networks.neuralnet.neurons.HiddenNeuron;
+import de.linusschmidt.hpagi.networks.neuralnet.neurons.InputNeuron;
+import de.linusschmidt.hpagi.networks.neuralnet.neurons.OutputNeuron;
+import de.linusschmidt.hpagi.networks.neuralnet.utilities.Connection;
+import de.linusschmidt.hpagi.networks.neuralnet.utilities.Functions;
 import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.util.ArrayList;

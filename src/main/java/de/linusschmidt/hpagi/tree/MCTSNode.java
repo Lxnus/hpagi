@@ -1,4 +1,4 @@
-package de.linusschmidt.hpagi.core.tree;
+package de.linusschmidt.hpagi.tree;
 
 import de.linusschmidt.hpagi.environment.IEnvironment;
 

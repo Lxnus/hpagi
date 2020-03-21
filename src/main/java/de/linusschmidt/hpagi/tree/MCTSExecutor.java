@@ -1,6 +1,5 @@
-package de.linusschmidt.hpagi.core.tree;
+package de.linusschmidt.hpagi.tree;
 
-import de.linusschmidt.hpagi.core.tree.MCTSNode;
 import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.utilities.Printer;
 import smile.plot.*;

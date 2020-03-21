@@ -1,7 +1,7 @@
 package de.linusschmidt.hpagi.agent;
 
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
-import de.linusschmidt.hpagi.core.tree.MCTSExecutor;
+import de.linusschmidt.hpagi.tree.MCTSExecutor;
 import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.utilities.Utilities;
 

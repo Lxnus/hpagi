@@ -1,6 +1,6 @@
-package de.linusschmidt.hpagi.core.networks.lvq;
+package de.linusschmidt.hpagi.networks.lvq;
 
-import de.linusschmidt.hpagi.core.networks.lvq.utilities.Dataset;
+import de.linusschmidt.hpagi.networks.lvq.utilities.Dataset;
 import de.linusschmidt.hpagi.utilities.MathUtilities;
 
 import java.io.*;

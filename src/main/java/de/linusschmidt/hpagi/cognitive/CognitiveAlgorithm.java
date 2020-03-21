@@ -2,7 +2,7 @@ package de.linusschmidt.hpagi.cognitive;
 
 import com.bayesserver.inference.InconsistentEvidenceException;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
-import de.linusschmidt.hpagi.core.memory.Hopfield;
+import de.linusschmidt.hpagi.memory.Hopfield;
 import de.linusschmidt.hpagi.utilities.MultithreadingUtilities;
 import de.linusschmidt.hpagi.utilities.Printer;
 

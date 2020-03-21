@@ -1,6 +1,6 @@
-package de.linusschmidt.hpagi.core.networks.neuralnet.neurons;
+package de.linusschmidt.hpagi.networks.neuralnet.neurons;
 
-import de.linusschmidt.hpagi.core.networks.neuralnet.utilities.Connection;
+import de.linusschmidt.hpagi.networks.neuralnet.utilities.Connection;
 
 /**
  * @author Linus Schmidt

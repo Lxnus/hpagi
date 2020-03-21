@@ -1,4 +1,4 @@
-package de.linusschmidt.hpagi.core.memory;
+package de.linusschmidt.hpagi.memory;
 
 import de.linusschmidt.hpagi.utilities.MathUtilities;
 import de.linusschmidt.hpagi.utilities.Printer;

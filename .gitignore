@@ -2,5 +2,5 @@
 /HPAGI
 hpagi.iml
 target/
-/src/main/java/de/linusschmidt/hpagi/core/inner/spinnaker/application_generated_data_files/
-/src/main/java/de/linusschmidt/hpagi/core/inner/spinnaker/reports/
+/src/main/java/de/linusschmidt/hpagi/core/spinnaker/application_generated_data_files/
+/src/main/java/de/linusschmidt/hpagi/core/spinnaker/reports/

@@ -1,4 +1,4 @@
-package de.linusschmidt.hpagi.core.networks.lvq.utilities;
+package de.linusschmidt.hpagi.networks.lvq.utilities;
 
 /**
  * @author Linus Schmidt
