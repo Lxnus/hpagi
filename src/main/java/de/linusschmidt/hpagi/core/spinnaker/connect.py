@@ -25,4 +25,4 @@ image_filenames = [name for name in filenames if name.endswith(".png")]
 print(image_filenames)
 
 for image_filename in image_filenames:
-    print (image_filename)
+    print(image_filename)
