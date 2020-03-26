@@ -31,21 +31,9 @@ public class MCTSNode {
         this.children = new ArrayList<>();
     }
 
-    public void expand(LinkedList<Double> data) {
-        if(data.size() > 0) {
-            MCTSNode child = new MCTSNode();
-            child.s = data.getFirst();
-            child.w = 1;
-            child.v = 1;
-            data.removeFirst();
-            this.addNode(child);
-            child.expand(data);
-        }
-    }
-
     private MCTSNode select() {
         MCTSNode best = null;
-        double bestValue = Double.NEGATIVE_INFINITY;
+        double bestValue = Double.MIN_VALUE;
         for(MCTSNode child : this.children) {
             assert child.v > 0;
             double uct = (child.v == 0 ? 0 : child.w / child.v + this.c * Math.sqrt(Math.log(this.v + 1) / child.v));
@@ -59,6 +47,18 @@ public class MCTSNode {
 
     private boolean isLeaf() {
         return this.children.size() == 0;
+    }
+
+    public void expand(LinkedList<Double> data) {
+        if(data.size() > 0) {
+            MCTSNode child = new MCTSNode();
+            child.s = data.getFirst();
+            child.w = 1;
+            child.v = 1;
+            data.removeFirst();
+            this.addNode(child);
+            child.expand(data);
+        }
     }
 
     private void expand(IEnvironment environment) {
@@ -85,13 +85,18 @@ public class MCTSNode {
             visited.add(current);
             environment.apply(current.s);
             isFinish = environment.isFinish();
+            System.out.println(isFinish);
         }
-        if(!isFinish) {
+        if(!isFinish && environment.getReward() != 1) {
             current.expand(environment);
             current = current.select();
             environment.apply(current.s);
+            System.out.println(environment.isFinish());
             visited.add(current);
         }
+        System.out.println();
+        System.out.println();
+        System.out.println();
         for(MCTSNode node : visited) {
             node.update(environment.getReward());
         }

@@ -18,9 +18,9 @@ public class Environment implements IEnvironment {
     private Entity npc;
     private Entity targetNPC;
     private Dimension dimension;
+    private Printer printer = new Printer();
 
     public Environment() {
-        Printer printer = new Printer();
         this.dimension = new Dimension(5, 5);
 
         this.buildNPC();
@@ -38,17 +38,6 @@ public class Environment implements IEnvironment {
         int x = (int) Math.round(Math.random() * this.dimension.getWidth());
         int y = (int) Math.round(Math.random() * this.dimension.getHeight());
         this.targetNPC = new Entity(x, y);
-    }
-
-    @Override
-    public double requestReward(double futureState) {
-        int tempX = this.npc.getX();
-        int tempY = this.npc.getY();
-        this.apply(futureState);
-        double reward = this.getReward();
-        this.npc.setX(tempX);
-        this.npc.setY(tempY);
-        return reward;
     }
 
     @Override
@@ -76,6 +65,7 @@ public class Environment implements IEnvironment {
                 this.npc.getX(),
                 this.npc.getY()
         };
+        printer.printConsole(String.format("NPC: [%s][%s], TargetNPC: [%s][%s]", this.npc.getX(), this.npc.getY(), this.targetNPC.getX(), this.targetNPC.getY()));
     }
 
     @Override

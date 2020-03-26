@@ -10,8 +10,6 @@ public interface IEnvironment {
 
     void apply(double inputs);
 
-    double requestReward(double futureState);
-
     double getReward();
 
     boolean isFinish();

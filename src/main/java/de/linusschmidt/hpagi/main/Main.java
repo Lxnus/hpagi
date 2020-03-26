@@ -10,11 +10,9 @@ import com.bayesserver.learning.parameters.ParameterLearningOutput;
 import com.bayesserver.learning.structure.*;
 import de.linusschmidt.hpagi.agent.Agent;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
-import de.linusschmidt.hpagi.cognitive.CognitiveAlgorithm;
 import de.linusschmidt.hpagi.tree.MCTSExecutor;
 import de.linusschmidt.hpagi.environment.IEnvironment;
 import de.linusschmidt.hpagi.memory.Hopfield;
-import de.linusschmidt.hpagi.translation.Translator;
 import de.linusschmidt.hpagi.utilities.Algorithms;
 import de.linusschmidt.hpagi.utilities.Graph;
 import de.linusschmidt.hpagi.utilities.Printer;
@@ -28,10 +26,6 @@ import smile.sequence.HMM;
 import smile.stat.distribution.EmpiricalDistribution;
 
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author Linus Schmidt
@@ -48,8 +42,6 @@ public class Main {
     public static void main(String[] args) throws Exception {
         bayesianTest();
         Main.printer.printConsole("**********************************************");
-        cognitiveMultithreadingTest();
-        Main.printer.printConsole("**********************************************");
         markovChainTest();
         Main.printer.printConsole("**********************************************");
         hiddenMarkovModelTest();
@@ -65,8 +57,6 @@ public class Main {
         bayesianStructureTest();
         Main.printer.printConsole("**********************************************");
         bayesianParameterTest();
-        Main.printer.printConsole("**********************************************");
-        translationTest();
         Main.printer.printConsole("**********************************************");
         testMCTS();
     }
@@ -94,24 +84,6 @@ public class Main {
         bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
         bayesianNetworkBuilder.generateBayesianNetwork();
         bayesianNetworkBuilder.predict(new double[] {0, 1, 0}, 0);
-    }
-    private static void cognitiveMultithreadingTest() throws InterruptedException, InconsistentEvidenceException {
-        LinkedList<double[]> data = new LinkedList<>();
-        data.add(new double[] { 0, 1, 1, 0 });
-        data.add(new double[] { 1, 0, 0, 1 });
-        data.add(new double[] { 1, 1, 0, 0 });
-        data.add(new double[] { 0, 0, 1, 1 });
-        data.add(new double[] { 1, 0, 0, 1 });
-
-        double[] X = new double[] {
-                1, 0, 1, 0
-        };
-
-        CognitiveAlgorithm cognitiveAlgorithm = new CognitiveAlgorithm();
-        cognitiveAlgorithm.setData(data);
-        cognitiveAlgorithm.generateBayesianNetwork(new String[] {"True", "False"}, new String[] {"A", "B", "C", "D"}, data);
-        cognitiveAlgorithm.print();
-        cognitiveAlgorithm.cognitivePrediction(X);
     }
 
     private static void markovChainTest() {
@@ -336,26 +308,5 @@ public class Main {
         for(int i = 0; i < parameterLearning.getNetwork().getNodes().get("Cluster").getDistribution().getTable().size(); i++) {
             Main.printer.printConsole(String.format("%s", parameterLearning.getNetwork().getNodes().get("Cluster").getDistribution().getTable().get(i)));
         }
-    }
-
-    private static void translationTest() throws InterruptedException {
-        Translator translator = new Translator();
-
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
-        Collection<Callable<Void>> runnables = new CopyOnWriteArrayList<>();
-        runnables.add(() -> {
-            //AtomicReference<String> text = new AtomicReference<>("Dies ist ein Text");
-            translator.add("Dies ist ein Text");
-            return null;
-        });
-        runnables.add(() -> {
-            //AtomicReference<String> text2 = new AtomicReference<>("Dies ist eine weiterer Text");
-            translator.add("Dies ist eine weiterer Text");
-            return null;
-        });
-        executor.invokeAll(runnables);
-        executor.shutdown();
-        translator.print();
     }
 }

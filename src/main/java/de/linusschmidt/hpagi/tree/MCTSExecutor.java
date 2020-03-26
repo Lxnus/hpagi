@@ -32,6 +32,7 @@ public class MCTSExecutor {
         this.environment.reset();
         if(reward == 1 && !this.compressed) {
             this.compress();
+            return reward;
         }
         return reward;
     }
@@ -52,7 +53,9 @@ public class MCTSExecutor {
         int nodes = this.rootNode.getNodes();
         MCTSNode compressedTree = new MCTSNode();
         compressedTree.setSuccessWay(this.rootNode.getSuccessWay());
+        this.printer.printConsole(String.format("Out: %s", processed));
         compressedTree.expand(processed);
+
         if(compressedTree.getNodes() < nodes) {
             this.printer.printConsole(String.format("Nodes-before: %s", this.rootNode.getNodes()));
             this.rootNode = compressedTree;

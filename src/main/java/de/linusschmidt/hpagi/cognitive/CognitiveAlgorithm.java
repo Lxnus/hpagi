@@ -1,17 +1,12 @@
 package de.linusschmidt.hpagi.cognitive;
 
-import com.bayesserver.inference.InconsistentEvidenceException;
 import de.linusschmidt.hpagi.bayes.BayesianNetworkBuilder;
-import de.linusschmidt.hpagi.memory.Hopfield;
-import de.linusschmidt.hpagi.utilities.MultithreadingUtilities;
+import de.linusschmidt.hpagi.environment.Environment;
+import de.linusschmidt.hpagi.environment.IEnvironment;
+import de.linusschmidt.hpagi.tree.MCTSExecutor;
 import de.linusschmidt.hpagi.utilities.Printer;
 
 import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author Linus Schmidt
@@ -19,66 +14,37 @@ import java.util.concurrent.Executors;
  */
 public class CognitiveAlgorithm {
 
+    private IEnvironment environment;
+
     private Printer printer;
+    private MCTSExecutor mctsExecutor;
     private BayesianNetworkBuilder bayesianNetworkBuilder;
 
-    private LinkedList<Hopfield> dynamicMemories;
+    public CognitiveAlgorithm(IEnvironment environment) {
+        this.environment = environment;
 
-    public CognitiveAlgorithm() {
         this.printer = new Printer();
-
-        this.dynamicMemories = new LinkedList<>();
-    }
-
-    public void setData(List<double[]> data) throws InterruptedException {
-        int threads = Runtime.getRuntime().availableProcessors();
-        ExecutorService executorService = Executors.newFixedThreadPool(threads);
-        final List<List<double[]>> partitions = MultithreadingUtilities.partition(threads, data);
-        final List<Callable<Void>> workers = this.createWorkers(partitions);
-        executorService.invokeAll(workers);
-        executorService.shutdown();
-    }
-
-    public void cognitivePrediction(double[] X) throws InconsistentEvidenceException {
-        this.bayesianNetworkBuilder.predict(X, 0);
-        this.bayesianNetworkBuilder.predict(X, 1);
-    }
-
-    public void generateBayesianNetwork(String[] nodeDescription, String[] dataDescription, LinkedList<double[]> data) {
+        this.mctsExecutor = new MCTSExecutor(environment);
         this.bayesianNetworkBuilder = new BayesianNetworkBuilder();
-        this.bayesianNetworkBuilder.setData(nodeDescription, dataDescription, data);
-        this.bayesianNetworkBuilder.generateBayesianNetwork();
     }
 
-    private synchronized List<Callable<Void>> createWorkers(final List<List<double[]>> partitions) {
-        final List<Callable<Void>> workers = new CopyOnWriteArrayList<>();
-        for (final List<double[]> partition : partitions) {
-            Callable<Void> worker = this.worker(partition);
-            workers.add(worker);
-        }
-        return workers;
+    private void run() {
+        LinkedList<Double> actions = this.mctsExecutor.solve(0.9);
+        this.printer.printConsole(String.format("Actions (Nodes: %s):", actions.size()));
+        this.printer.printConsole(actions.toString());
     }
 
-    private Callable<Void> worker(final List<double[]> data) {
-        return () -> {
-            synchronized (data) {
-                for(final double[] vec : data) {
-                    final Hopfield dynamicMemory = new Hopfield(vec.length);
-                    dynamicMemory.addData(vec);
-                    dynamicMemory.addData(vec);
-                    dynamicMemory.train();
-                    addDynamicMemory(dynamicMemory);
-                }
-            }
-            return null;
-        };
+    private void connect() {
+        this.run();
+
+        int actions = this.environment.possibleActions().length;
+
+        this.printer.printConsole(String.format("Actions (length): %s", actions));
     }
 
-    private synchronized void addDynamicMemory(final Hopfield hopfield) {
-        this.dynamicMemories.add(hopfield);
-    }
-
-    public void print() {
-        this.printer.printConsole(String.format("Dyn.-Memories: %s", this.dynamicMemories.size()));
+    public static void main(String[] args) {
+        IEnvironment environment = new Environment();
+        CognitiveAlgorithm cognitiveAlgorithm = new CognitiveAlgorithm(environment);
+        cognitiveAlgorithm.connect();
     }
 }
