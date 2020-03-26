@@ -1,6 +1,5 @@
 package v2.mcts.tree;
 
-import recode.mcts.draw.TreeView;
 import v2.mcts.environment.Environment;
 import v2.mcts.environment.IEnvironment;
 import smile.plot.Line;
@@ -34,9 +33,6 @@ public final class MCTSAgent {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
-        TreeView treeView = new TreeView(this.rootNode);
-        treeView.showTree("");
     }
 
     public static void main(String[] args) {
