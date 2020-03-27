@@ -20,7 +20,7 @@ public final class Environment implements IEnvironment<Double> {
     private Dimension dimension;
 
     public Environment() {
-        this.dimension = new Dimension(5, 5);
+        this.dimension = new Dimension(50, 50);
 
         this.buildNPC();
         this.buildTargetNPC();
@@ -61,11 +61,11 @@ public final class Environment implements IEnvironment<Double> {
 
     @Override
     public double getReward() {
-        double reward = 1.0 / MathUtilities.distance(this.npc.getX(), this.targetNPC.getX(), this.npc.getY(), this.targetNPC.getY());
+        double reward = 1.0 / (1.0 + MathUtilities.distance(this.npc.getX(), this.npc.getY(), this.targetNPC.getX(), this.targetNPC.getY()));
         if(this.npc.getX() == this.targetNPC.getX() && this.npc.getY() == this.targetNPC.getY()) {
             return 1.0D;
         } else if(this.npc.getX() < 0 || this.npc.getX() > this.dimension.getWidth() || this.npc.getY() < 0 || this.npc.getY() > this.dimension.getHeight()) {
-            return 0.0D;
+            return 0.0;
         }
         return reward;
     }

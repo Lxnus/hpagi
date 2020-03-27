@@ -18,8 +18,9 @@ public final class MCTSAgent {
     }
 
     public void run(IEnvironment environment) {
-        double[][] points = new double[1000][2];
-        for(int i = 0; i < 1000; i++) {
+        int size = 1000;
+        double[][] points = new double[size][2];
+        for(int i = 0; i < size; i++) {
             double reward = rootNode.rollOut((IEnvironment<Object>) environment);
             points[i] = new double[] {
                 i, reward

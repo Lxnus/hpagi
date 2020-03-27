@@ -64,11 +64,10 @@ public final class MCTS<T extends Object> {
             this.expand(environment);
         }
         LinkedList<MCTS<T>> visited = this.walkThrough(environment, new LinkedList<>());
-        if(!environment.isFinish() && environment.getReward() != 1.0D) {
+        final double reward = environment.getReward();
+        if(!environment.isFinish() && reward != 1.0D) {
             visited.getLast().expand(environment);
         }
-        final double reward = environment.getReward();
-        System.out.println(reward);
         visited.forEach(node -> node.update(reward));
         environment.reset();
         return reward;
@@ -98,9 +97,6 @@ public final class MCTS<T extends Object> {
     public String toString() {
         return "MCTS{" +
             "state=" + state +
-            ", wins=" + wins +
-            ", visits=" + visits +
-            ", constant=" + constant +
             ", children=" + children +
             '}';
     }
