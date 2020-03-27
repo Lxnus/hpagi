@@ -20,13 +20,13 @@ public final class Environment implements IEnvironment<Double> {
     private Dimension dimension;
 
     public Environment() {
-        this.dimension = new Dimension(50, 50);
+        this.dimension = new Dimension(5, 5);
 
         this.buildNPC();
         this.buildTargetNPC();
 
         Printer printer = new Printer();
-        printer.printConsole(String.format("NPC: [%s][%s], TargetNPC: [%s][%s]", this.npc.getX(), this.npc.getY(), this.targetNPC.getX(), this.targetNPC.getY()));
+        printer.printConsole(String.format("NPC: [%s][%s], TargetNPC: [%s][%s]", this.npc.getPosition().getX(), this.npc.getPosition().getY(), this.targetNPC.getPosition().getX(), this.targetNPC.getPosition().getY()));
     }
 
     private void buildNPC() {
@@ -61,26 +61,35 @@ public final class Environment implements IEnvironment<Double> {
 
     @Override
     public double getReward() {
-        double reward = 1.0 / (1.0 + MathUtilities.distance(this.npc.getX(), this.npc.getY(), this.targetNPC.getX(), this.targetNPC.getY()));
-        if(this.npc.getX() == this.targetNPC.getX() && this.npc.getY() == this.targetNPC.getY()) {
+        double reward = 1.0 / (1.0 + MathUtilities.distance(this.npc.getPosition().getX(), this.npc.getPosition().getY(), this.targetNPC.getPosition().getX(), this.targetNPC.getPosition().getY()));
+        if(this.npc.getPosition().getX() == this.targetNPC.getPosition().getX() && this.npc.getPosition().getY() == this.targetNPC.getPosition().getY()) {
             return 1.0D;
-        } else if(this.npc.getX() < 0 || this.npc.getX() > this.dimension.getWidth() || this.npc.getY() < 0 || this.npc.getY() > this.dimension.getHeight()) {
-            return 0.0;
+        } else if(this.npc.getPosition().getX() < 0 || this.npc.getPosition().getX() > this.dimension.getWidth() || this.npc.getPosition().getY() < 0 || this.npc.getPosition().getY() > this.dimension.getHeight()) {
+            return -1.0;
         }
         return reward;
     }
 
     @Override
     public boolean isFinish() {
-        if(this.npc.getX() < 0 || this.npc.getX() > this.dimension.getWidth() || this.npc.getY() < 0 || this.npc.getY() > this.dimension.getHeight()) {
+        if(this.npc.getPosition().getX() < 0 || this.npc.getPosition().getX() > this.dimension.getWidth() || this.npc.getPosition().getY() < 0 || this.npc.getPosition().getY() > this.dimension.getHeight()) {
             return true;
-        } else return this.npc.getX() == this.targetNPC.getX() && this.npc.getY() == this.targetNPC.getY();
+        } else return this.npc.getPosition().getX() == this.targetNPC.getPosition().getX() && this.npc.getPosition().getY() == this.targetNPC.getPosition().getY();
+    }
+
+    @Override
+    public Position getState() {
+        return this.npc.getPosition();
     }
 
     @Override
     public void reset() {
-        this.npc.setX(this.startX);
-        this.npc.setY(this.startY);
+        this.npc.getPosition().setX(this.startX);
+        this.npc.getPosition().setY(this.startY);
+    }
+
+    public Dimension getDimension() {
+        return dimension;
     }
 
     /*

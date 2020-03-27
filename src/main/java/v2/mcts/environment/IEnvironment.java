@@ -15,5 +15,7 @@ public interface IEnvironment<T extends Object> {
 
     boolean isFinish();
 
+    Position getState();
+
     void reset();
 }

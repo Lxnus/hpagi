@@ -6,32 +6,17 @@ package v2.mcts.environment;
  */
 class Entity {
 
-    private int x;
-    private int y;
+    private Position position;
 
     Entity(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.position = new Position(x, y);
     }
 
     void update(int x, int y) {
-        this.x += x;
-        this.y += y;
+        this.position.update(x, y);
     }
 
-    int getX() {
-        return x;
-    }
-
-    void setX(int x) {
-        this.x = x;
-    }
-
-    int getY() {
-        return y;
-    }
-
-    void setY(int y) {
-        this.y = y;
+    public Position getPosition() {
+        return position;
     }
 }
