@@ -1,7 +1,7 @@
 package v2.mcts.tree;
 
+import v2.mcts.environment.MazeEnvironment;
 import v2.mcts.environment.Environment;
-import v2.mcts.environment.IEnvironment;
 import smile.plot.Line;
 import smile.plot.LinePlot;
 import smile.plot.PlotCanvas;
@@ -11,17 +11,17 @@ import java.awt.*;
 
 public final class MCTSAgent {
 
-    private MCTS<Object> rootNode;
+    private Tree<Object> rootNode;
 
     public MCTSAgent() {
-        this.rootNode = new MCTS<>(null);
+        this.rootNode = new Tree<>(null);
     }
 
-    public void run(IEnvironment environment) {
+    public void run(Environment environment) {
         int size = 1000;
         double[][] points = new double[size][2];
         for(int i = 0; i < size; i++) {
-            double reward = rootNode.rollOut((IEnvironment<Object>) environment);
+            double reward = rootNode.rollOut((Environment<Object>) environment);
             points[i] = new double[] {
                 i, reward
             };
@@ -37,7 +37,7 @@ public final class MCTSAgent {
     }
 
     public static void main(String[] args) {
-        Environment environment = new Environment();
+        MazeEnvironment environment = new MazeEnvironment();
         MCTSAgent agent = new MCTSAgent();
         agent.run(environment);
     }
