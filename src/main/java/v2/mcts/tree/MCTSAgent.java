@@ -8,20 +8,21 @@ import smile.plot.PlotCanvas;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public final class MCTSAgent {
 
-    private Tree<Object> rootNode;
+    private Tree<Double> rootNode;
 
     public MCTSAgent() {
-        this.rootNode = new Tree<>(null);
+        this.rootNode = new Tree<>(1.0D, new ArrayList<>());
     }
 
     public void run(Environment environment) {
         int size = 1000;
         double[][] points = new double[size][2];
         for(int i = 0; i < size; i++) {
-            double reward = rootNode.rollOut((Environment<Object>) environment);
+            double reward = rootNode.rollOut(environment);
             points[i] = new double[] {
                 i, reward
             };

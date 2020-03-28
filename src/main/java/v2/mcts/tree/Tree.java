@@ -13,13 +13,14 @@ import java.util.function.Function;
 import v2.mcts.environment.Environment;
 
 public final class Tree<ValueT> {
+
   private final ValueT state;
   private final List<Tree<ValueT>> children;
 
   private double wins = 1.0D;
   private double visits = 1.0D;
 
-  private Tree(ValueT state, List<Tree<ValueT>> children) {
+  Tree(ValueT state, List<Tree<ValueT>> children) {
     this.state = state;
     this.children = children;
   }
