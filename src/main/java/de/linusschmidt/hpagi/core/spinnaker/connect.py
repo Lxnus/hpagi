@@ -13,7 +13,7 @@ job = newClient.submit_job(
     collab_id=79910,
     wait=True)
 
-filenames = newClient.download_data(job=job, local_dir=".")
+filenames = newClient.download_data(job=job, local_dir="")
 
 image_filenames = [name for name in filenames if name.endswith(".png")]
 print(image_filenames)
