@@ -9,4 +9,4 @@ Maybe in future AIXI would be part of the theory.
 ### The theory is not a final solution and not yet completely implemented!
 
 ### You will find a detailed explanation of HPAGI here: 
-(Facharbeit_Informatik_1.pdf)
+[Facharbeit_Informatik_1.pdf]
