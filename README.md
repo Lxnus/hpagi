@@ -1,4 +1,7 @@
 # HPAGI - High Performance Artificial General Intelligence
+
+This project is no longer under progress. There will be a new and better project released in future!
+
 HPAGI is a theory about an universal reinforcement learning agent.
 The theory is based on an approximation of MCTS and combinations of (Hidden) Markov Model, Hopfield,
 Bayesian Networks, different Deep learning algorithms and own algorithms.
